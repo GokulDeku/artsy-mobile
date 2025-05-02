@@ -1,5 +1,10 @@
+@file:OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
+
 package com.example.artsyactivity.ui.components
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Person
@@ -11,17 +16,26 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-fun TopBar(
-    onSearchClick: () -> Unit = {},
-    onUserClick: () -> Unit = {}
+fun SharedTransitionScope.TopBar(
+    onSearchClick: () -> Unit,
+    onUserClick: () -> Unit = {},
+    animatedContentScope: AnimatedContentScope,
 ) {
     TopAppBar(
         title = { Text("Artist Search") },
         actions = {
-            IconButton(onClick = onSearchClick) {
+            IconButton(
+                modifier = Modifier
+                    .sharedElement(
+                        rememberSharedContentState(key = "search-icon-button"),
+                        animatedVisibilityScope = animatedContentScope,
+                    ),
+                onClick = onSearchClick
+            ) {
                 Icon(
                     imageVector = Icons.Filled.Search,
                     contentDescription = "Search"

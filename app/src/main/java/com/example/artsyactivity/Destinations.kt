@@ -7,4 +7,7 @@ sealed interface Destinations {
 
     @Serializable
     data object HomeScreen: Destinations
+
+    @Serializable
+    data object SearchScreen: Destinations
 }
