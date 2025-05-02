@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.artsyactivity.data.model.FavoriteArtist
 
@@ -28,9 +29,11 @@ fun FavoriteArtistListItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(12.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(0.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.background
+        )
     ) {
         Row(
             modifier = Modifier
@@ -38,18 +41,40 @@ fun FavoriteArtistListItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(artist.name, style = MaterialTheme.typography.titleMedium)
-                Text(artist.nationality, style = MaterialTheme.typography.bodySmall)
-                Text("Born: ${artist.birthday}", style = MaterialTheme.typography.bodySmall)
-                Text("Added: ${artist.addedTime}", style = MaterialTheme.typography.bodySmall)
-            }
-            IconButton(onClick = onClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = "View Details"
-                )
+            Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(artist.name, style = MaterialTheme.typography.titleMedium)
+                    Text(artist.getNationalityWithBirthYear(), style = MaterialTheme.typography.bodySmall)
+                }
+                Text(artist.addedTime, style = MaterialTheme.typography.bodySmall)
+                IconButton(onClick = onClick) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "View Details"
+                    )
+                }
             }
         }
     }
+}
+
+
+@Preview
+@Composable
+fun PreviewFavoriteArtistItem() {
+    val artist = FavoriteArtist(
+        id = "1",
+        name = "Calude Monet",
+        nationality = "French",
+        birthdate = "01/01/1840",
+        addedTime = "4 seconds ago",
+    )
+
+    FavoriteArtistListItem(
+        onClick = {
+
+        },
+        artist = artist
+    )
+
 }
