@@ -10,4 +10,7 @@ sealed interface Destinations {
 
     @Serializable
     data object SearchScreen: Destinations
+
+    @Serializable
+    data object ArtInfoScreen: Destinations
 }

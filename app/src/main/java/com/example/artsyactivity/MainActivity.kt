@@ -19,6 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.artsyactivity.ui.screens.art_info.ArtInfoScreen
 import com.example.artsyactivity.ui.screens.home.HomeScreen
 import com.example.artsyactivity.ui.screens.home.HomeScreenViewModel
 import com.example.artsyactivity.ui.screens.search.SearchScreen
@@ -68,6 +69,11 @@ class MainActivity : ComponentActivity() {
                                 SearchScreen(
                                     animatedContentScope = this
                                 )
+                            }
+
+
+                            composable<Destinations.ArtInfoScreen> {
+                                ArtInfoScreen()
                             }
                         }
                     }

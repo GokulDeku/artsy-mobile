@@ -50,120 +50,116 @@ fun SharedTransitionScope.HomeScreen(
 ) {
     val context = LocalContext.current
 
-
-    with(this) {
-        Scaffold(
-            topBar = {
-                TopBar(
-                    animatedContentScope = animatedContentScope,
-                    onSearchClick = {
-                        uiAction(
-                            HomeScreenViewModel.UiAction.OnSearchClicked
-                        )
-                    }
-                )
-            }
-        ) { innerPadding ->
-            Column(modifier = Modifier.padding(innerPadding)) {
-                val currentDate = remember {
-                    val calender = Calendar.getInstance()
-                    val dateFormat = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
-                    dateFormat.format(calender.time)
-                }
-
-                Text(
-                    text = currentDate,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(30.dp)
-                        .background(MaterialTheme.colorScheme.surfaceContainer),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Favorites",
-                        fontWeight = FontWeight.Bold
+    Scaffold(
+        topBar = {
+            TopBar(
+                animatedContentScope = animatedContentScope,
+                onSearchClick = {
+                    uiAction(
+                        HomeScreenViewModel.UiAction.OnSearchClicked
                     )
                 }
+            )
+        }
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
+            val currentDate = remember {
+                val calender = Calendar.getInstance()
+                val dateFormat = SimpleDateFormat("d MMMM yyyy", Locale.getDefault())
+                dateFormat.format(calender.time)
+            }
 
-                Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = currentDate,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            )
 
-                when {
-                    !uiState.isLoggedIn -> {
-                        Button(
-                            onClick = {
-                                uiAction(HomeScreenViewModel.UiAction.OnLoginClicked)
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 100.dp, vertical = 10.dp),
-                        ) {
-                            Text("Log in to see favorites")
-                        }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(30.dp)
+                    .background(MaterialTheme.colorScheme.surfaceContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Favorites",
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            when {
+                !uiState.isLoggedIn -> {
+                    Button(
+                        onClick = {
+                            uiAction(HomeScreenViewModel.UiAction.OnLoginClicked)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 100.dp, vertical = 10.dp),
+                    ) {
+                        Text("Log in to see favorites")
                     }
+                }
 
-                    uiState.favorites.isEmpty() -> {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 12.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(MaterialTheme.colorScheme.primaryContainer)
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("No favorites")
-                        }
+                uiState.favorites.isEmpty() -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.primaryContainer)
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("No favorites")
                     }
+                }
 
-                    else -> {
-                        LazyColumn(
-                            modifier = Modifier
-                        ) {
-                            items(uiState.favorites.size) { index ->
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier
+                    ) {
+                        items(uiState.favorites.size) { index ->
 
-                                key(uiState.favorites[index].id) {
-                                    FavoriteArtistListItem(
-                                        artist = uiState.favorites[index],
-                                        onClick = {
-                                            uiAction(
-                                                HomeScreenViewModel.UiAction.OnArtistClicked(
-                                                    uiState.favorites[index].id
-                                                )
+                            key(uiState.favorites[index].id) {
+                                FavoriteArtistListItem(
+                                    artist = uiState.favorites[index],
+                                    onClick = {
+                                        uiAction(
+                                            HomeScreenViewModel.UiAction.OnArtistClicked(
+                                                uiState.favorites[index].id
                                             )
-                                        }
-                                    )
-                                }
+                                        )
+                                    }
+                                )
                             }
                         }
                     }
                 }
+            }
 
-                Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 24.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Powered by Artsy",
-                        style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
-                        modifier = Modifier.clickable {
-                            val intent = Intent(Intent.ACTION_VIEW, "https://www.artsy.net/".toUri())
-                            context.startActivity(intent)
-                        }
-                    )
-                }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Powered by Artsy",
+                    style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic),
+                    modifier = Modifier.clickable {
+                        val intent = Intent(Intent.ACTION_VIEW, "https://www.artsy.net/".toUri())
+                        context.startActivity(intent)
+                    }
+                )
             }
         }
     }
-
 }
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
