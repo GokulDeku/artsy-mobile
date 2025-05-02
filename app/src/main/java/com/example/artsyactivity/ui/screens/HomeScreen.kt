@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -55,16 +54,14 @@ fun HomeScreen(
             Text(
                 text = currentDate,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
 
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(
-                        color = Color(0xFFE0E0E0)
-                    )
-                    .height(30.dp),
+                    .height(30.dp)
+                    .background(MaterialTheme.colorScheme.surfaceContainer),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -81,7 +78,7 @@ fun HomeScreen(
                         onClick = onLoginClick,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 100.dp, vertical = 10.dp)
+                            .padding(horizontal = 100.dp, vertical = 10.dp),
                     ) {
                         Text("Log in to see favorites")
                     }
@@ -136,13 +133,12 @@ fun HomeScreen(
                         context.startActivity(intent)
                     }
                 )
-
             }
         }
     }
 }
 
-@Preview()
+@Preview
 @Composable
 fun HomeScreenPreview_LoggedOut() {
     HomeScreen(
