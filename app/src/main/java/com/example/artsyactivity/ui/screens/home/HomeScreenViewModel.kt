@@ -14,9 +14,6 @@ class HomeScreenViewModel : ViewModel() {
             is UiAction.OnArtistClicked -> {
 
             }
-            UiAction.OnLoginClicked -> {
-
-            }
 
             else -> Unit
         }

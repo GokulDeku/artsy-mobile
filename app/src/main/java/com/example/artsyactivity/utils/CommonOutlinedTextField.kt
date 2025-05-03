@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 enum class TextFieldType {
-    EMAIL,
+    GENERAL,
     PASSWORD
 }
 
@@ -36,6 +36,7 @@ fun CommonOutlinedTextField(
     modifier: Modifier = Modifier,
     textFieldType: TextFieldType,
     data: String,
+    onValueChange: (String) -> Unit,
     label: String,
     isError: Boolean = false,
     errorMessage: String? = null,
@@ -61,9 +62,10 @@ fun CommonOutlinedTextField(
         } else null
     }
 
-    Column(modifier = modifier) {
+
+    Column {
         OutlinedTextField(
-            modifier = Modifier.onFocusChanged {
+            modifier = modifier.onFocusChanged {
                 if (isFocused != null && !it.isFocused) {
                     shouldShowError = isValid(value)
                 }
@@ -75,6 +77,7 @@ fun CommonOutlinedTextField(
             value = value,
             onValueChange = {
                 value = it
+                onValueChange(it)
                 if (shouldShowError) {
                     shouldShowError = isValid(value)
                 }
@@ -86,7 +89,7 @@ fun CommonOutlinedTextField(
             },
             isError = shouldShowError,
             visualTransformation = when (textFieldType) {
-                TextFieldType.EMAIL -> VisualTransformation.None
+                TextFieldType.GENERAL -> VisualTransformation.None
                 TextFieldType.PASSWORD -> PasswordVisualTransformation()
             }
         )
@@ -108,10 +111,13 @@ private fun PreviewCommonOutlinedTextField() {
     ) {
         CommonOutlinedTextField(
             modifier = Modifier,
-            textFieldType = TextFieldType.EMAIL,
+            textFieldType = TextFieldType.GENERAL,
             label = "Email",
             data = "",
             errorMessage = "Email is Invalid",
+            onValueChange = {
+
+            },
             isValid = {
                 !it.contains("@")
             }
@@ -123,6 +129,7 @@ private fun PreviewCommonOutlinedTextField() {
             textFieldType = TextFieldType.PASSWORD,
             label = "Password",
             data = "abcd@123",
+            onValueChange = {},
             isValid = {
                 true
             }

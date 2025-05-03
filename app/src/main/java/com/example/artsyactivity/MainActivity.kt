@@ -22,6 +22,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.artsyactivity.ui.screens.art_info.ArtInfoScreen
 import com.example.artsyactivity.ui.screens.home.HomeScreen
 import com.example.artsyactivity.ui.screens.home.HomeScreenViewModel
+import com.example.artsyactivity.ui.screens.home.HomeScreenViewModel.UiAction
+import com.example.artsyactivity.ui.screens.login.LoginScreen
+import com.example.artsyactivity.ui.screens.register.RegisterScreen
 import com.example.artsyactivity.ui.screens.search.SearchScreen
 import com.example.artsyactivity.ui.theme.ArtsyActivityTheme
 
@@ -54,14 +57,42 @@ class MainActivity : ComponentActivity() {
                                     uiState = uiState,
                                     uiAction = { action ->
                                         when (action) {
-                                            HomeScreenViewModel.UiAction.OnSearchClicked -> {
+                                            UiAction.OnSearchClicked -> {
                                                 navController.navigate(Destinations.SearchScreen)
+                                            }
+
+                                            UiAction.OnLoginClicked -> {
+                                                navController.navigate(Destinations.LoginScreen)
                                             }
 
                                             else -> viewModel.onUiAction(action)
                                         }
                                     },
                                     animatedContentScope = this
+                                )
+                            }
+
+                            composable<Destinations.LoginScreen> {
+                                LoginScreen(
+                                    onBackClick = {
+                                        navController.navigateUp()
+                                    },
+                                    onRegisterClick = {
+                                        navController.navigate(Destinations.RegisterScreen) {
+                                            launchSingleTop = true
+                                        }
+                                    }
+                                )
+                            }
+
+                            composable<Destinations.RegisterScreen> {
+                                RegisterScreen(
+                                    onLoginClick = {
+                                        navController.navigateUp()
+                                    },
+                                    onBackClick = {
+                                        navController.navigateUp()
+                                    }
                                 )
                             }
 

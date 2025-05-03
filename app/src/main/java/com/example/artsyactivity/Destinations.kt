@@ -9,6 +9,12 @@ sealed interface Destinations {
     data object HomeScreen: Destinations
 
     @Serializable
+    data object LoginScreen: Destinations
+
+    @Serializable
+    data object RegisterScreen: Destinations
+
+    @Serializable
     data object SearchScreen: Destinations
 
     @Serializable
