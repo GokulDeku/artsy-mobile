@@ -53,11 +53,15 @@ fun SharedTransitionScope.HomeScreen(
     Scaffold(
         topBar = {
             TopBar(
+                isLoggedIn = uiState.isLoggedIn,
                 animatedContentScope = animatedContentScope,
                 onSearchClick = {
                     uiAction(
                         HomeScreenViewModel.UiAction.OnSearchClicked
                     )
+                },
+                onUserClick = {
+
                 }
             )
         }
