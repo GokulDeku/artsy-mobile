@@ -10,8 +10,8 @@ data class LoginResponse(
 
 @Serializable
 data class UserData(
-    val id: Int,
+    val userId: String,
     val fullName: String,
     val userImg: String,
-    val favoriteArtist: List<FavoriteArtist>
+    val favoriteArtists: List<FavoriteArtist>? = emptyList()
 )

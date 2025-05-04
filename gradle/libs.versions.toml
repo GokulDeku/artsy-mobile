@@ -17,6 +17,7 @@ retrofit = "2.11.0"
 retofit-kotlinx-serialization-converter = "1.0.0"
 loggingInteceptor = "4.12.0"
 coilOkHttp = "3.1.0"
+splashScreen = "1.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,7 +43,7 @@ persistent-cookie-jar = { group = "com.github.franmontiel", name = "PersistentCo
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-kotlinx-serialization-converter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retofit-kotlinx-serialization-converter" }
 http-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInteceptor" }
-
+splash-screen = {group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreen"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

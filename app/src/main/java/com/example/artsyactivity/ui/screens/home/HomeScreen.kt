@@ -45,8 +45,8 @@ import java.util.Locale
 @Composable
 fun SharedTransitionScope.HomeScreen(
     animatedContentScope: AnimatedContentScope,
-    uiState: HomeScreenViewModel.UiState,
-    uiAction: (HomeScreenViewModel.UiAction) -> Unit
+    uiState: MainViewModel.UiState,
+    uiAction: (MainViewModel.UiAction) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -57,12 +57,12 @@ fun SharedTransitionScope.HomeScreen(
                 animatedContentScope = animatedContentScope,
                 onSearchClick = {
                     uiAction(
-                        HomeScreenViewModel.UiAction.OnSearchClicked
+                        MainViewModel.UiAction.OnSearchClicked
                     )
                 },
                 onLogOutClick = {
                     uiAction(
-                        HomeScreenViewModel.UiAction.OnLogOutClicked
+                        MainViewModel.UiAction.OnLogOutClicked
                     )
                 },
                 userImg = uiState.userImg
@@ -101,7 +101,7 @@ fun SharedTransitionScope.HomeScreen(
                 !uiState.isLoggedIn -> {
                     Button(
                         onClick = {
-                            uiAction(HomeScreenViewModel.UiAction.OnLoginClicked)
+                            uiAction(MainViewModel.UiAction.OnLoginClicked)
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -136,7 +136,7 @@ fun SharedTransitionScope.HomeScreen(
                                     artist = uiState.favorites[index],
                                     onClick = {
                                         uiAction(
-                                            HomeScreenViewModel.UiAction.OnArtistClicked(
+                                            MainViewModel.UiAction.OnArtistClicked(
                                                 uiState.favorites[index].id
                                             )
                                         )
@@ -176,7 +176,7 @@ fun HomeScreenPreview_LoggedOut() {
     SharedTransitionLayout {
         AnimatedContent(true) {
             HomeScreen(
-                uiState = HomeScreenViewModel.UiState(
+                uiState = MainViewModel.UiState(
                     isLoggedIn = false
                 ),
                 uiAction = {
@@ -196,7 +196,7 @@ fun HomeScreenPreview_LoggedInNoFavorites() {
     SharedTransitionLayout {
         AnimatedContent(true) {
             HomeScreen(
-                uiState = HomeScreenViewModel.UiState(
+                uiState = MainViewModel.UiState(
                     isLoggedIn = true
                 ),
                 uiAction = {
@@ -216,7 +216,7 @@ fun HomeScreenPreview_LoggedInFavorites() {
     SharedTransitionLayout {
         AnimatedContent(true) {
             HomeScreen(
-                uiState = HomeScreenViewModel.UiState(
+                uiState = MainViewModel.UiState(
                     isLoggedIn = true,
                     favorites = listOf(
                         FavoriteArtist(

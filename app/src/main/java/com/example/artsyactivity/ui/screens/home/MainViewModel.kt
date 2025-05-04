@@ -1,11 +1,15 @@
 package com.example.artsyactivity.ui.screens.home
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.artsyactivity.ArtsyApplication
 import com.example.artsyactivity.data.network.models.request.LoginData
 import com.example.artsyactivity.data.network.models.response.FavoriteArtist
+import com.example.artsyactivity.data.network.models.response.LoginResponse
 import com.example.artsyactivity.network.ApiResult
 import com.example.artsyactivity.network.safeApiCall
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,11 +17,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HomeScreenViewModel : ViewModel() {
+class MainViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
-    val authService = ArtsyApplication.providesAuthService()
+    var shouldShowSplashScreen by mutableStateOf(true)
+
+    private val authService = ArtsyApplication.providesAuthService()
 
     init {
         validateSessionCookie()
@@ -42,6 +48,10 @@ class HomeScreenViewModel : ViewModel() {
         }
     }
 
+    fun updateSplashScreenStatus(status: Boolean) {
+        shouldShowSplashScreen = status
+    }
+
     fun validateSessionCookie() {
         viewModelScope.launch {
             val result = safeApiCall {
@@ -50,16 +60,23 @@ class HomeScreenViewModel : ViewModel() {
 
             when(result) {
                 is ApiResult.Error -> {
+                    updateSplashScreenStatus(false)
                     Log.d("VIJ", "result: ${result.error}")
                 }
                 is ApiResult.Success -> {
+                    updateSplashScreenStatus(false)
                     updateIsLoggedIn(result.data.isAuthorized)
                     updateFavorites(result.data.favoriteArtists)
                     updateUserImg(result.data.userImg)
-                    Log.d("VIJ", "result: ${result.data}")
                 }
             }
         }
+    }
+
+    fun updateUserInformation(result: LoginResponse) {
+        updateIsLoggedIn(true)
+        updateFavorites(result.user.favoriteArtists.orEmpty())
+        updateUserImg(result.user.userImg)
     }
 
     fun doLoginCall() {

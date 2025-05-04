@@ -88,7 +88,7 @@ fun RegisterScreen(
                 onValueChange = {
                     name = it
                 },
-                isValid = {
+                isInvalid = {
                     !Patterns.EMAIL_ADDRESS.matcher(it).matches()
                 }
             )
@@ -108,7 +108,7 @@ fun RegisterScreen(
                 onValueChange = {
                     email = it
                 },
-                isValid = {
+                isInvalid = {
                     !Patterns.EMAIL_ADDRESS.matcher(it).matches()
                 }
             )
@@ -124,7 +124,7 @@ fun RegisterScreen(
                     password = it
                 },
                 errorMessage = "Password cannot be empty",
-                isValid = {
+                isInvalid = {
                     true
                 }
             )

@@ -40,7 +40,7 @@ fun CommonOutlinedTextField(
     label: String,
     isError: Boolean = false,
     errorMessage: String? = null,
-    isValid: (String) -> Boolean
+    isInvalid: (String) -> Boolean
 ) {
     var value by rememberSaveable(data) { mutableStateOf(data) }
     var shouldShowError by rememberSaveable(isError) { mutableStateOf(isError) }
@@ -67,7 +67,7 @@ fun CommonOutlinedTextField(
         OutlinedTextField(
             modifier = modifier.onFocusChanged {
                 if (isFocused != null && !it.isFocused) {
-                    shouldShowError = isValid(value)
+                    shouldShowError = isInvalid(value)
                 }
 
                 if (it.isFocused) {
@@ -79,7 +79,7 @@ fun CommonOutlinedTextField(
                 value = it
                 onValueChange(it)
                 if (shouldShowError) {
-                    shouldShowError = isValid(value)
+                    shouldShowError = isInvalid(value)
                 }
             },
             label = {
@@ -118,7 +118,7 @@ private fun PreviewCommonOutlinedTextField() {
             onValueChange = {
 
             },
-            isValid = {
+            isInvalid = {
                 !it.contains("@")
             }
         )
@@ -130,7 +130,7 @@ private fun PreviewCommonOutlinedTextField() {
             label = "Password",
             data = "abcd@123",
             onValueChange = {},
-            isValid = {
+            isInvalid = {
                 true
             }
         )

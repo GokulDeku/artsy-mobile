@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -41,12 +43,15 @@ import com.example.artsyactivity.utils.TextFieldType
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit,
-    onRegisterClick: () -> Unit,
+    uiState: LoginScreenViewModel.UiState,
+    uiAction: (LoginScreenViewModel.UiAction) -> Unit,
 ) {
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+
+    var shouldShowErrorInEmail by rememberSaveable { mutableStateOf(false) }
+    var shouldShowErrorInPassword by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
@@ -62,7 +67,13 @@ fun LoginScreen(
                     )
                 },
                 navigationIcon = {
-                    ArrowBackIcon(onClick = onBackClick)
+                    ArrowBackIcon(
+                        onClick = {
+                            uiAction(
+                                LoginScreenViewModel.UiAction.OnBackClicked
+                            )
+                        }
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
@@ -83,10 +94,15 @@ fun LoginScreen(
                 textFieldType = TextFieldType.GENERAL,
                 label = "Email",
                 data = email,
+                isError = shouldShowErrorInEmail,
+                errorMessage = if(email.isEmpty())
+                    "Email cannot be empty"
+                else
+                    "Invalid Email Format",
                 onValueChange = {
                     email = it
                 },
-                isValid = {
+                isInvalid = {
                     !Patterns.EMAIL_ADDRESS.matcher(it).matches()
                 }
             )
@@ -97,12 +113,14 @@ fun LoginScreen(
                     .fillMaxWidth(),
                 textFieldType = TextFieldType.PASSWORD,
                 label = "Password",
+                isError = shouldShowErrorInPassword,
+                errorMessage = "Password cannot be empty",
                 data = password,
                 onValueChange = {
                     password = it
                 },
-                isValid = {
-                    true
+                isInvalid = {
+                    false
                 }
             )
 
@@ -110,16 +128,33 @@ fun LoginScreen(
                 modifier = Modifier
                     .padding(top = 20.dp)
                     .fillMaxWidth(),
-                onClick = {}
+                onClick = {
+                    if(email.isEmpty() && password.isEmpty()) {
+                        shouldShowErrorInEmail = true
+                        shouldShowErrorInPassword = true
+                        return@Button
+                    }
+                    uiAction(LoginScreenViewModel.UiAction.OnLoginClicked(email, password))
+                },
+                enabled = !uiState.isLoading
             ) {
-                Text(text = "Login")
+                if(uiState.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text(text = "Login")
+                }
             }
 
-            Text(
-                modifier = Modifier.padding(top = 10.dp),
-                text = "Email or password is incorrect. Try again",
-                color = MaterialTheme.colorScheme.error
-            )
+            if(uiState.shouldShowError) {
+                Text(
+                    modifier = Modifier.padding(top = 10.dp),
+                    text = uiState.errorMessage,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
 
             Text(
                 modifier = Modifier.padding(top = 20.dp),
@@ -138,7 +173,7 @@ fun LoginScreen(
                             linkInteractionListener = remember {
                                 object : LinkInteractionListener {
                                     override fun onClick(link: LinkAnnotation) {
-                                        onRegisterClick()
+                                        uiAction(LoginScreenViewModel.UiAction.OnRegisterClicked)
                                     }
                                 }
                             }
@@ -154,7 +189,11 @@ fun LoginScreen(
 @Composable
 private fun PreviewLoginScreen() {
     LoginScreen(
-        onBackClick = {},
-        onRegisterClick = {}
+        uiState = LoginScreenViewModel.UiState(
+            isLoading = true
+        ),
+        uiAction = {
+
+        }
     )
 }

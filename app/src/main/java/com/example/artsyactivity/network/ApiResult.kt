@@ -8,7 +8,7 @@ sealed interface ApiResult<out D, out E> {
 }
 
 // Empty placeholder for Errors
-enum class NetworkError(val message: String = "") {
+enum class NetworkError(var message: String = "") {
     PARSE_FAILED,
     REQUEST_TIMED_OUT(message = "Oops! Your request took too long to respond. Can you check your internet connection and try again later"),
     UNAUTHORIZED,
@@ -19,6 +19,6 @@ enum class NetworkError(val message: String = "") {
     PAYLOAD_TOO_LARGE,
     SERVER_ERROR,
     SERIALIZATION,
-    UNKNOWN
+    UNKNOWN(message = "")
 }
 
