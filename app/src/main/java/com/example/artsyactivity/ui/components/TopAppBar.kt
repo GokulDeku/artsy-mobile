@@ -6,6 +6,8 @@ import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Person
@@ -21,19 +23,33 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 
 
 @Composable
 fun SharedTransitionScope.TopBar(
     isLoggedIn: Boolean,
+    userImg: String,
     onSearchClick: () -> Unit,
-    onUserClick: () -> Unit,
+    onLogOutClick: () -> Unit,
     animatedContentScope: AnimatedContentScope,
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
+
+    val onUserClick: () -> Unit = remember(isLoggedIn) {
+        {
+            if (isLoggedIn) {
+                expanded = !expanded
+            }
+        }
+    }
 
     TopAppBar(
         title = { Text("Artist Search") },
@@ -53,18 +69,22 @@ fun SharedTransitionScope.TopBar(
             }
 
             Box(modifier = Modifier) {
-                IconButton(
-                    onClick = {
-                        if(isLoggedIn) {
-                            expanded = !expanded
-                        }
-                        onUserClick()
+                IconButton(onClick = onUserClick) {
+                    if (userImg.isEmpty()) {
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
+                            contentDescription = "User"
+                        )
+                    } else {
+                        AsyncImage(
+                            model = userImg,
+                            contentDescription = "User Avatar",
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
                     }
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Person,
-                        contentDescription = "User"
-                    )
                 }
 
                 DropdownMenu(
@@ -76,7 +96,8 @@ fun SharedTransitionScope.TopBar(
                             Text(text = "Log out")
                         },
                         onClick = {
-
+                            onLogOutClick()
+                            expanded = false
                         }
                     )
 
@@ -87,7 +108,9 @@ fun SharedTransitionScope.TopBar(
                                 color = MaterialTheme.colorScheme.error
                             )
                         },
-                        onClick = {}
+                        onClick = {
+                            expanded = false
+                        }
                     )
                 }
             }

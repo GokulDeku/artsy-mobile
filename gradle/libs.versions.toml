@@ -13,6 +13,10 @@ kotlinx-serialization = "1.7.3"
 kotlinPluginSerialization = "2.1.10"
 materialIconsExtended = "1.7.8"
 coil = "3.1.0"
+retrofit = "2.11.0"
+retofit-kotlinx-serialization-converter = "1.0.0"
+loggingInteceptor = "4.12.0"
+coilOkHttp = "3.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,7 +36,13 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navVersion" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-coil-compose = { group = "io.coil-kt.coil3",name = "coil-compose", version.ref = "coil" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilOkHttp" }
+persistent-cookie-jar = { group = "com.github.franmontiel", name = "PersistentCookieJar", version = "v1.0.1" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-kotlinx-serialization-converter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retofit-kotlinx-serialization-converter" }
+http-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInteceptor" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

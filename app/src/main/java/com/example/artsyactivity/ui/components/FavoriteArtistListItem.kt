@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.artsyactivity.data.model.FavoriteArtist
+import com.example.artsyactivity.data.network.models.response.FavoriteArtist
 
 @Composable
 fun FavoriteArtistListItem(
@@ -46,7 +46,7 @@ fun FavoriteArtistListItem(
                     Text(artist.name, style = MaterialTheme.typography.titleMedium)
                     Text(artist.getNationalityWithBirthYear(), style = MaterialTheme.typography.bodySmall)
                 }
-                Text(artist.addedTime, style = MaterialTheme.typography.bodySmall)
+                Text(artist.addedAt, style = MaterialTheme.typography.bodySmall)
                 IconButton(onClick = onClick) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
@@ -66,8 +66,10 @@ fun PreviewFavoriteArtistItem() {
         id = "1",
         name = "Calude Monet",
         nationality = "French",
-        birthdate = "01/01/1840",
-        addedTime = "4 seconds ago",
+        birthday = "01/01/1840",
+        addedAt = "4 seconds ago",
+        deathday = "",
+        img_src = ""
     )
 
     FavoriteArtistListItem(

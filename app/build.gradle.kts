@@ -57,6 +57,13 @@ dependencies {
 
     implementation(libs.material.icons.extended)
 
+    implementation(libs.persistent.cookie.jar)
+
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.kotlinx.serialization.converter)
+    implementation(libs.http.logging.interceptor)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

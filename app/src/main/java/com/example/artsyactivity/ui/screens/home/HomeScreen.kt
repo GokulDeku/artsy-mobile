@@ -35,7 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import com.example.artsyactivity.data.model.FavoriteArtist
+import com.example.artsyactivity.data.network.models.response.FavoriteArtist
 import com.example.artsyactivity.ui.components.FavoriteArtistListItem
 import com.example.artsyactivity.ui.components.TopBar
 import java.text.SimpleDateFormat
@@ -60,9 +60,12 @@ fun SharedTransitionScope.HomeScreen(
                         HomeScreenViewModel.UiAction.OnSearchClicked
                     )
                 },
-                onUserClick = {
-
-                }
+                onLogOutClick = {
+                    uiAction(
+                        HomeScreenViewModel.UiAction.OnLogOutClicked
+                    )
+                },
+                userImg = uiState.userImg
             )
         }
     ) { innerPadding ->
@@ -220,15 +223,19 @@ fun HomeScreenPreview_LoggedInFavorites() {
                             id = "1",
                             name = "Calude Monet",
                             nationality = "French",
-                            birthdate = "01/01/1840",
-                            addedTime = "4 seconds ago"
+                            birthday = "01/01/1840",
+                            addedAt = "4 seconds ago",
+                            deathday = "",
+                            img_src = ""
                         ),
                         FavoriteArtist(
                             id = "2",
                             name = "Pablo Picasso",
                             nationality = "Spanish",
-                            birthdate = "01/01/1881",
-                            addedTime = "15 seconds ago"
+                            birthday = "01/01/1881",
+                            addedAt = "15 seconds ago",
+                            deathday = "",
+                            img_src = ""
                         )
                     )
                 ),
