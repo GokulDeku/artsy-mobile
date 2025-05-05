@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun SharedTransitionScope.SearchTopBar(
     modifier: Modifier = Modifier,
+    onValueChange: (String) -> Unit,
+    onCloseClick: () -> Unit,
     animatedContentScope: AnimatedContentScope
 ) {
 
@@ -47,6 +49,7 @@ fun SharedTransitionScope.SearchTopBar(
     }
 
     TopAppBar(
+        modifier = modifier,
         title = {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -71,6 +74,7 @@ fun SharedTransitionScope.SearchTopBar(
                     value = value,
                     onValueChange = {
                         value = it
+                        onValueChange(value)
                     },
                     textStyle = TextStyle(
                         fontSize = 18.sp
@@ -89,7 +93,7 @@ fun SharedTransitionScope.SearchTopBar(
 
         actions = {
             IconButton(
-                onClick = {}
+                onClick = onCloseClick
             ) {
                 Icon(
                     imageVector = Icons.Filled.Close,

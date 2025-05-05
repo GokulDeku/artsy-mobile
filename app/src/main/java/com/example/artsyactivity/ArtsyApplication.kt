@@ -3,6 +3,7 @@ package com.example.artsyactivity
 import android.app.Application
 import com.example.artsyactivity.network.NetworkModule
 import com.example.artsyactivity.service.AuthService
+import com.example.artsyactivity.service.SearchService
 
 class ArtsyApplication: Application() {
 
@@ -15,7 +16,11 @@ class ArtsyApplication: Application() {
         private lateinit var instance: ArtsyApplication
 
         fun providesAuthService(): AuthService {
-            return NetworkModule.provideAuthService(instance)
+            return NetworkModule.provideApiService<AuthService>(instance)
+        }
+
+        fun providesSearchService(): SearchService {
+            return NetworkModule.provideApiService<SearchService>(instance)
         }
     }
 }

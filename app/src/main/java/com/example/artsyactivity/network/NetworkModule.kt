@@ -1,7 +1,6 @@
 package com.example.artsyactivity.network
 
 import android.content.Context
-import com.example.artsyactivity.service.AuthService
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
@@ -38,7 +37,7 @@ object NetworkModule {
         return okHttpClient
     }
 
-    private fun getRetrofit(context: Context): Retrofit {
+    fun getRetrofit(context: Context): Retrofit {
         val networkJson = Json { ignoreUnknownKeys = true }
         val contentType = "application/json".toMediaType()
         if (retrofit == null) {
@@ -53,7 +52,7 @@ object NetworkModule {
         return retrofit!!
     }
 
-    fun provideAuthService(context: Context): AuthService {
-        return getRetrofit(context).create(AuthService::class.java)
+    inline fun <reified T> provideApiService(context: Context): T {
+        return getRetrofit(context).create(T::class.java)
     }
 }

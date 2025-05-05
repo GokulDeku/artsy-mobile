@@ -11,8 +11,10 @@ import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,12 +24,17 @@ import com.example.artsyactivity.ui.screens.search.components.SearchTopBar
 @Composable
 fun SharedTransitionScope.SearchScreen(
     modifier: Modifier = Modifier,
+    uiState: SearchScreenViewModel.SearchScreenUiState,
+    keyWordChange: (String) -> Unit,
+    onCloseClick: () -> Unit,
     animatedContentScope: AnimatedContentScope
 ) {
     Scaffold(
         topBar = {
             SearchTopBar(
-                animatedContentScope = animatedContentScope
+                animatedContentScope = animatedContentScope,
+                onValueChange = keyWordChange,
+                onCloseClick = onCloseClick
             )
         }
     ) { innerPadding ->
@@ -38,10 +45,15 @@ fun SharedTransitionScope.SearchScreen(
                 .padding(horizontal = 10.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            items(2) {
-                ArtistDetail(
-                    artistName = "Calude Monet"
-                )
+            uiState.searchResult?.let {
+                itemsIndexed(uiState.searchResult.data) { index, item ->
+                    key(item.artist_id) {
+                        ArtistDetail(
+                            artistName = item.title,
+                            imageUrl = item.img_src
+                        )
+                    }
+                }
             }
         }
     }
@@ -55,7 +67,14 @@ private fun PreviewSearchScreen(modifier: Modifier = Modifier) {
     SharedTransitionLayout {
         AnimatedContent(true) {
             SearchScreen(
-                animatedContentScope = this
+                uiState = SearchScreenViewModel.SearchScreenUiState(),
+                animatedContentScope = this,
+                onCloseClick = {
+
+                },
+                keyWordChange = {
+
+                }
             )
         }
     }

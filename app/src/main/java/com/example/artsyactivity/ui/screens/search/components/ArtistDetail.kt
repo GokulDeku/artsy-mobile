@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.rememberAsyncImagePainter
 import com.example.artsyactivity.R
 import com.example.artsyactivity.utils.ChevronRightIcon
 
@@ -37,10 +38,9 @@ fun ArtistDetail(
     val resource = if (isInspectionMode) {
         painterResource(R.drawable.demo_image_2)
     } else {
-        painterResource(R.drawable.demo_image_2)
-//        rememberAsyncImagePainter(
-//            model = imageUrl
-//        )
+        rememberAsyncImagePainter(
+            model = imageUrl
+        )
     }
 
     Box(modifier = modifier.fillMaxWidth()) {
@@ -57,7 +57,7 @@ fun ArtistDetail(
                     .height(200.dp),
                 painter = resource,
                 contentDescription = "Artist Image",
-                contentScale = ContentScale.None
+                contentScale = ContentScale.FillWidth
             )
         }
 

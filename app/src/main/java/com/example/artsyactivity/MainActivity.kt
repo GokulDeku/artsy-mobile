@@ -30,6 +30,7 @@ import com.example.artsyactivity.ui.screens.login.LoginScreen
 import com.example.artsyactivity.ui.screens.login.LoginScreenViewModel
 import com.example.artsyactivity.ui.screens.register.RegisterScreen
 import com.example.artsyactivity.ui.screens.search.SearchScreen
+import com.example.artsyactivity.ui.screens.search.SearchScreenViewModel
 import com.example.artsyactivity.ui.theme.ArtsyActivityTheme
 
 class MainActivity : ComponentActivity() {
@@ -127,8 +128,16 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable<Destinations.SearchScreen> {
+                                val viewModel = viewModel<SearchScreenViewModel>()
+                                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
                                 SearchScreen(
-                                    animatedContentScope = this
+                                    uiState = uiState,
+                                    animatedContentScope = this,
+                                    onCloseClick = {
+                                        navController.navigateUp()
+                                    },
+                                    keyWordChange = viewModel::onKeywordChange
                                 )
                             }
 
