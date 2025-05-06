@@ -35,7 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import com.example.artsyactivity.data.network.models.response.FavoriteArtist
+import com.example.artsyactivity.data.network.models.response.login.FavoriteArtist
 import com.example.artsyactivity.ui.components.FavoriteArtistListItem
 import com.example.artsyactivity.ui.components.TopBar
 import java.text.SimpleDateFormat

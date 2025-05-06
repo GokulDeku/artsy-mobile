@@ -2,17 +2,23 @@
 
 package com.example.artsyactivity.ui.screens.art_info
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PersonSearch
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
@@ -27,18 +33,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.artsyactivity.ui.screens.art_info.components.ArtInfoTopBar
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
-fun ArtInfoScreen(modifier: Modifier = Modifier) {
+fun ArtInfoScreen(
+    modifier: Modifier = Modifier,
+    uiState: ArtInfoViewModel.UiState,
+) {
     var state by rememberSaveable { mutableIntStateOf(0) }
     val pagerState = rememberPagerState(
         pageCount = { 3 },
         initialPage = 0,
-        initialPageOffsetFraction = 0.5f
     )
 
     LaunchedEffect(Unit) {
@@ -73,6 +84,7 @@ fun ArtInfoScreen(modifier: Modifier = Modifier) {
         modifier = modifier,
         topBar = {
             ArtInfoTopBar(
+                title = uiState.artistTitle,
                 onBackClick = {},
                 onFavoriteClicked = {}
             )
@@ -106,19 +118,77 @@ fun ArtInfoScreen(modifier: Modifier = Modifier) {
             }
 
             HorizontalPager(
-                modifier = Modifier.fillMaxSize(),
-                state = pagerState,
-                verticalAlignment = Alignment.Top
+                modifier = Modifier
+                    .fillMaxSize(),
+                state = pagerState
             ) {
-
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(10.dp)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (uiState.shouldShowLoader) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(50.dp)
+                        )
+                    } else {
+                        DetailTab(
+                            title = uiState.artistTitle,
+                            birthInfo = uiState.artistDetail!!.getBirthInfo(),
+                            biography = uiState.artistDetail.biography
+                        )
+                    }
+                }
             }
         }
 
     }
 }
 
+@Composable
+fun DetailTab(
+    modifier: Modifier = Modifier,
+    title: String,
+    birthInfo: String,
+    biography: String
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold
+            )
+        )
+
+        Text(
+            modifier = Modifier.padding(top = 5.dp, bottom = 10.dp),
+            text = birthInfo,
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontSize = 16.sp,
+                fontWeight = FontWeight.W500
+            )
+        )
+
+        Text(
+            modifier = Modifier.padding(horizontal = 12.dp),
+            style = MaterialTheme.typography.bodyMedium,
+            text = biography
+        )
+    }
+}
+
 @Preview
 @Composable
 private fun PreviewArtInfoScreen() {
-    ArtInfoScreen()
+    ArtInfoScreen(
+        uiState = ArtInfoViewModel.UiState()
+    )
 }

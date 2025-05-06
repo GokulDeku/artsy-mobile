@@ -23,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.artsyactivity.ui.screens.art_info.ArtInfoScreen
+import com.example.artsyactivity.ui.screens.art_info.ArtInfoViewModel
 import com.example.artsyactivity.ui.screens.home.HomeScreen
 import com.example.artsyactivity.ui.screens.home.MainViewModel
 import com.example.artsyactivity.ui.screens.home.MainViewModel.UiAction
@@ -134,16 +135,26 @@ class MainActivity : ComponentActivity() {
                                 SearchScreen(
                                     uiState = uiState,
                                     animatedContentScope = this,
-                                    onCloseClick = {
-                                        navController.navigateUp()
-                                    },
-                                    keyWordChange = viewModel::onKeywordChange
+                                    uiAction = viewModel::onUiAction,
+                                    onArtistClick = { item ->
+                                        navController.navigate(
+                                            Destinations.ArtInfoScreen(
+                                                artistName = item.title,
+                                                artistId = item.artist_id
+                                            )
+                                        )
+                                    }
                                 )
                             }
 
 
-                            composable<Destinations.ArtInfoScreen> {
-                                ArtInfoScreen()
+                            composable<Destinations.ArtInfoScreen> { backStackEntry ->
+                                val viewModel = viewModel<ArtInfoViewModel>()
+                                val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+                                ArtInfoScreen(
+                                    uiState = uiState
+                                )
                             }
                         }
                     }

@@ -18,6 +18,7 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.artsyactivity.data.network.models.response.search.ArtistDetail
 import com.example.artsyactivity.ui.screens.search.components.ArtistDetail
 import com.example.artsyactivity.ui.screens.search.components.SearchTopBar
 
@@ -25,16 +26,16 @@ import com.example.artsyactivity.ui.screens.search.components.SearchTopBar
 fun SharedTransitionScope.SearchScreen(
     modifier: Modifier = Modifier,
     uiState: SearchScreenViewModel.SearchScreenUiState,
-    keyWordChange: (String) -> Unit,
-    onCloseClick: () -> Unit,
-    animatedContentScope: AnimatedContentScope
+    uiAction: (SearchScreenViewModel.UiAction) -> Unit,
+    animatedContentScope: AnimatedContentScope,
+    onArtistClick: (ArtistDetail) -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             SearchTopBar(
                 animatedContentScope = animatedContentScope,
-                onValueChange = keyWordChange,
-                onCloseClick = onCloseClick
+                keyword = uiState.keyword,
+                uiAction = uiAction,
             )
         }
     ) { innerPadding ->
@@ -50,7 +51,10 @@ fun SharedTransitionScope.SearchScreen(
                     key(item.artist_id) {
                         ArtistDetail(
                             artistName = item.title,
-                            imageUrl = item.img_src
+                            imageUrl = item.img_src,
+                            onCardClick = {
+                                onArtistClick(item)
+                            }
                         )
                     }
                 }
@@ -63,18 +67,13 @@ fun SharedTransitionScope.SearchScreen(
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
 @Preview
 @Composable
-private fun PreviewSearchScreen(modifier: Modifier = Modifier) {
+private fun PreviewSearchScreen() {
     SharedTransitionLayout {
         AnimatedContent(true) {
             SearchScreen(
                 uiState = SearchScreenViewModel.SearchScreenUiState(),
-                animatedContentScope = this,
-                onCloseClick = {
-
-                },
-                keyWordChange = {
-
-                }
+                uiAction = {},
+                animatedContentScope = this
             )
         }
     }

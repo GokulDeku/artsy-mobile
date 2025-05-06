@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.artsyactivity.ArtsyApplication
 import com.example.artsyactivity.data.network.models.request.LoginData
-import com.example.artsyactivity.data.network.models.response.LoginResponse
+import com.example.artsyactivity.data.network.models.response.login.LoginResponse
 import com.example.artsyactivity.network.ApiResult
 import com.example.artsyactivity.network.safeApiCall
 import kotlinx.coroutines.flow.MutableStateFlow

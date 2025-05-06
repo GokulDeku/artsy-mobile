@@ -2,6 +2,7 @@ package com.example.artsyactivity
 
 import android.app.Application
 import com.example.artsyactivity.network.NetworkModule
+import com.example.artsyactivity.service.ArtInfoService
 import com.example.artsyactivity.service.AuthService
 import com.example.artsyactivity.service.SearchService
 
@@ -21,6 +22,10 @@ class ArtsyApplication: Application() {
 
         fun providesSearchService(): SearchService {
             return NetworkModule.provideApiService<SearchService>(instance)
+        }
+
+        fun providesArtInfoService(): ArtInfoService {
+            return NetworkModule.provideApiService<ArtInfoService>(instance)
         }
     }
 }

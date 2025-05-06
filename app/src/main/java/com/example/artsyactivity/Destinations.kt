@@ -18,5 +18,5 @@ sealed interface Destinations {
     data object SearchScreen: Destinations
 
     @Serializable
-    data object ArtInfoScreen: Destinations
+    data class ArtInfoScreen(val artistName: String, val artistId: String): Destinations
 }

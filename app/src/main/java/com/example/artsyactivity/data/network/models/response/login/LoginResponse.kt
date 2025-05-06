@@ -1,4 +1,4 @@
-package com.example.artsyactivity.data.network.models.response
+package com.example.artsyactivity.data.network.models.response.login
 
 import kotlinx.serialization.Serializable
 

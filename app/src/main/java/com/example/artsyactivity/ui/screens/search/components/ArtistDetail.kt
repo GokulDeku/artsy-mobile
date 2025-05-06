@@ -2,6 +2,7 @@ package com.example.artsyactivity.ui.screens.search.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,7 +31,8 @@ import com.example.artsyactivity.utils.ChevronRightIcon
 fun ArtistDetail(
     modifier: Modifier = Modifier,
     artistName: String = "Artist Name",
-    imageUrl: String = ""
+    imageUrl: String = "",
+    onCardClick: () -> Unit = {}
 ) {
 
     val isInspectionMode = LocalInspectionMode.current
@@ -43,7 +45,11 @@ fun ArtistDetail(
         )
     }
 
-    Box(modifier = modifier.fillMaxWidth()) {
+    Box(
+        modifier = modifier
+                .fillMaxWidth()
+                .clickable(onClick = onCardClick)
+    ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -82,6 +88,4 @@ fun ArtistDetail(
             }
         }
     }
-
-
 }

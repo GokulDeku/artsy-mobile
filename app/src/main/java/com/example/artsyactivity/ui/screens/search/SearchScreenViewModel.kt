@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.artsyactivity.ArtsyApplication
-import com.example.artsyactivity.data.network.models.response.SearchResult
+import com.example.artsyactivity.data.network.models.response.search.SearchResult
 import com.example.artsyactivity.network.ApiResult
 import com.example.artsyactivity.network.safeApiCall
 import kotlinx.coroutines.FlowPreview
@@ -61,12 +61,36 @@ class SearchScreenViewModel : ViewModel() {
         }
     }
 
+    fun clearKeyword() {
+        _uiState.update {
+            it.copy(
+                keyword = ""
+            )
+        }
+    }
+
     fun onKeywordChange(keyword: String) {
         _uiState.update {
             it.copy(
                 keyword = keyword
             )
         }
+    }
+
+    fun onUiAction(action: UiAction) {
+        when(action) {
+            UiAction.ClearKeyWord -> {
+                clearKeyword()
+            }
+            is UiAction.OnKeyWordChange -> {
+                onKeywordChange(action.keyword)
+            }
+        }
+    }
+
+    sealed interface UiAction {
+        data object ClearKeyWord: UiAction
+        data class OnKeyWordChange(val keyword: String): UiAction
     }
 
 

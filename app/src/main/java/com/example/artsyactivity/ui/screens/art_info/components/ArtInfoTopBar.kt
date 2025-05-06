@@ -19,13 +19,14 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun ArtInfoTopBar(
     modifier: Modifier = Modifier,
+    title: String,
     onBackClick: () -> Unit,
     onFavoriteClicked: () -> Unit
 ) {
     TopAppBar(
         title = {
             Text(
-                text = "Pablo Picasso",
+                text = title,
                 style = MaterialTheme.typography.titleLarge
             )
         },
@@ -56,6 +57,7 @@ fun ArtInfoTopBar(
 @Preview
 fun PreviewArtInfoTopBar() {
     ArtInfoTopBar(
+        title = "Pablo Picasso",
         onBackClick = {},
         onFavoriteClicked = {}
     )
