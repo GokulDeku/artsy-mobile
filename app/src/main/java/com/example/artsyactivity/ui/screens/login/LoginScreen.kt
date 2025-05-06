@@ -120,7 +120,7 @@ fun LoginScreen(
                     password = it
                 },
                 isInvalid = {
-                    false
+                    it.trim().isEmpty()
                 }
             )
 
