@@ -30,6 +30,7 @@ import com.example.artsyactivity.ui.screens.home.MainViewModel.UiAction
 import com.example.artsyactivity.ui.screens.login.LoginScreen
 import com.example.artsyactivity.ui.screens.login.LoginScreenViewModel
 import com.example.artsyactivity.ui.screens.register.RegisterScreen
+import com.example.artsyactivity.ui.screens.register.RegisterScreenViewModel
 import com.example.artsyactivity.ui.screens.search.SearchScreen
 import com.example.artsyactivity.ui.screens.search.SearchScreenViewModel
 import com.example.artsyactivity.ui.theme.ArtsyActivityTheme
@@ -106,7 +107,7 @@ class MainActivity : ComponentActivity() {
                                                     email = action.email,
                                                     password = action.password,
                                                     onLoginSuccess = {
-                                                        Log.d("VIJ", "onLoginSuccess: $it")
+                                                        Log.d("LOGIN_RESPONSE", it.toString())
                                                         mainViewModel.updateUserInformation(it)
                                                         navController.popBackStack()
                                                     }
@@ -118,7 +119,9 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable<Destinations.RegisterScreen> {
+                                val viewModel = viewModel<RegisterScreenViewModel>()
                                 RegisterScreen(
+                                    viewModel = viewModel,
                                     onLoginClick = {
                                         navController.navigateUp()
                                     },
