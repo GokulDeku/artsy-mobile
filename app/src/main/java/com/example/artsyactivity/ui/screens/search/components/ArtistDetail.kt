@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
 import com.example.artsyactivity.R
 import com.example.artsyactivity.utils.ChevronRightIcon
+import com.example.artsyactivity.utils.FavoriteIcon
 
 @Composable
 @Preview
@@ -32,6 +33,9 @@ fun ArtistDetail(
     modifier: Modifier = Modifier,
     artistName: String = "Artist Name",
     imageUrl: String = "",
+    shouldShowFavoriteIcon: Boolean = false,
+    isFavorite: Boolean = false,
+    onFavoriteIconClicked: () -> Unit = { },
     onCardClick: () -> Unit = {}
 ) {
 
@@ -47,8 +51,8 @@ fun ArtistDetail(
 
     Box(
         modifier = modifier
-                .fillMaxWidth()
-                .clickable(onClick = onCardClick)
+            .fillMaxWidth()
+            .clickable(onClick = onCardClick)
     ) {
         Card(
             modifier = Modifier
@@ -67,6 +71,16 @@ fun ArtistDetail(
             )
         }
 
+        if (shouldShowFavoriteIcon) {
+            Box(modifier = Modifier.align(Alignment.TopEnd)) {
+                FavoriteIcon(
+                    isFavorite = isFavorite,
+                    onClick = onFavoriteIconClicked
+                )
+            }
+        }
+
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -83,7 +97,6 @@ fun ArtistDetail(
                     text = artistName,
                     style = MaterialTheme.typography.titleMedium
                 )
-
                 ChevronRightIcon()
             }
         }

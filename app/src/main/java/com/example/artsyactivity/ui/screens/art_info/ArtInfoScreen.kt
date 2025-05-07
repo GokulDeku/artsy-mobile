@@ -25,12 +25,8 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -39,26 +35,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.artsyactivity.ui.screens.art_info.components.ArtInfoTopBar
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 @Composable
 fun ArtInfoScreen(
     modifier: Modifier = Modifier,
     uiState: ArtInfoViewModel.UiState,
+    uiAction: (ArtInfoViewModel.UiAction) -> Unit
 ) {
-    var state by rememberSaveable { mutableIntStateOf(0) }
     val pagerState = rememberPagerState(
         pageCount = { 3 },
-        initialPage = 0,
+        initialPage = uiState.currentPage,
     )
 
-    LaunchedEffect(Unit) {
-        snapshotFlow {
-            pagerState.currentPage
-        }.distinctUntilChanged().collect { page ->
-            state = page
-        }
-    }
+    val coroutineScope = rememberCoroutineScope()
 
     val tabInfo = rememberSaveable {
         listOf<TabInfo>(
@@ -92,12 +82,17 @@ fun ArtInfoScreen(
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             SecondaryTabRow(
-                selectedTabIndex = state
+                selectedTabIndex = uiState.currentPage
             ) {
                 tabInfo.forEachIndexed { index, tabInfo ->
                     Tab(
-                        selected = state == index,
-                        onClick = { state = index },
+                        selected = uiState.currentPage == index,
+                        onClick = {
+                            uiAction(ArtInfoViewModel.UiAction.OnPageChanged(index))
+                            coroutineScope.launch {
+                                pagerState.scrollToPage(index)
+                            }
+                        },
                         text = {
                             Text(
                                 text = tabInfo.title,
@@ -120,13 +115,14 @@ fun ArtInfoScreen(
             HorizontalPager(
                 modifier = Modifier
                     .fillMaxSize(),
-                state = pagerState
+                state = pagerState,
+                key = { it },
+                userScrollEnabled = false
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(10.dp)
-                        .verticalScroll(rememberScrollState()),
+                        .padding(10.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -136,11 +132,24 @@ fun ArtInfoScreen(
                                 .size(50.dp)
                         )
                     } else {
-                        DetailTab(
-                            title = uiState.artistTitle,
-                            birthInfo = uiState.artistDetail!!.getBirthInfo(),
-                            biography = uiState.artistDetail.biography
-                        )
+                        if (uiState.currentPage == 0) {
+                            DetailTab(
+                                title = uiState.artistTitle,
+                                birthInfo = uiState.artistDetail!!.getBirthInfo(),
+                                biography = uiState.artistDetail.biography
+                            )
+                        } else if (uiState.currentPage == 1) {
+                            ArtWorkTab(
+                                artWorks = uiState.artWork!!.data
+                            )
+                        } else {
+                            SimilarTab(
+                                similarArtists = uiState.artistDetail!!.similarArtists,
+                                onFavoriteIconClick = {
+                                    uiAction(ArtInfoViewModel.UiAction.UpdateFavoriteArtist(it))
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -148,6 +157,7 @@ fun ArtInfoScreen(
 
     }
 }
+
 
 @Composable
 fun DetailTab(
@@ -158,7 +168,8 @@ fun DetailTab(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -189,6 +200,9 @@ fun DetailTab(
 @Composable
 private fun PreviewArtInfoScreen() {
     ArtInfoScreen(
-        uiState = ArtInfoViewModel.UiState()
+        uiState = ArtInfoViewModel.UiState(),
+        uiAction = {
+
+        }
     )
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.artsyactivity.ArtsyApplication
 import com.example.artsyactivity.Destinations
+import com.example.artsyactivity.data.network.models.response.artistInfo.ArtWork
 import com.example.artsyactivity.data.network.models.response.artistInfo.ArtistInfo
 import com.example.artsyactivity.network.ApiResult
 import com.example.artsyactivity.network.safeApiCall
@@ -39,7 +40,7 @@ class ArtInfoViewModel(
             val result = safeApiCall {
                 artistInfoService.getArtistDetails(
                     id = artistInfo.artistId,
-                    shouldShowSimilarArtist = false
+                    shouldShowSimilarArtist = true
                 )
             }
 
@@ -57,10 +58,97 @@ class ArtInfoViewModel(
         }
     }
 
+    fun updateArtWork(artWork: ArtWork) {
+        _uiState.update {
+            it.copy(
+                artWork = artWork
+            )
+        }
+    }
+
+    private fun updateFavoriteArtist(artistId: String) {
+        viewModelScope.launch {
+            val result = safeApiCall {
+                artistInfoService.updateFavoriteArtist(artistId)
+            }
+
+            when(result) {
+                is ApiResult.Error -> {
+                    Log.d("VIJ", "Error updating favorites")
+                }
+                is ApiResult.Success -> {
+                    updateFavoriteStatusForArtist(result.data.isFavorite, result.data.artistData.id)
+                }
+            }
+        }
+    }
+
+    private fun updateFavoriteStatusForArtist(isFavorite: Boolean, artist_id: String) {
+        _uiState.update {
+            it.copy(
+                artistDetail = it.artistDetail?.copy(
+                    similarArtists = it.artistDetail.similarArtists.map {
+                        if(it.artist_id == artist_id)
+                            it.copy(isFavorite = isFavorite)
+                        else
+                            it
+                    }
+                )
+            )
+        }
+    }
+
+    private fun getArtWorkDetails(artistId: String) {
+        viewModelScope.launch {
+            updateShouldShowLoader(true)
+            val result = safeApiCall {
+                artistInfoService.getArtWorkCategories(
+                    artWorkId = artistId
+                )
+            }
+
+            when (result) {
+                is ApiResult.Error -> {
+                    Log.d("VIJ", "error fetching artwork details: ${result.error}")
+                }
+
+                is ApiResult.Success -> {
+                    updateArtWork(result.data)
+                    updateShouldShowLoader(false)
+                }
+            }
+        }
+    }
+
     private fun updateShouldShowLoader(shouldShowLoader: Boolean) {
         _uiState.update {
             it.copy(
                 shouldShowLoader = shouldShowLoader
+            )
+        }
+    }
+
+    fun onUiAction(action: UiAction) {
+        when (action) {
+            is UiAction.OnPageChanged -> {
+
+                updateCurrentPage(action.page)
+
+                if (action.page == 1 && uiState.value.artWork == null) {
+                    getArtWorkDetails(artistInfo.artistId)
+                }
+            }
+
+            is UiAction.UpdateFavoriteArtist -> {
+                updateFavoriteArtist(action.artistId)
+            }
+        }
+    }
+
+    private fun updateCurrentPage(page: Int) {
+        _uiState.update {
+            it.copy(
+                currentPage = page
             )
         }
     }
@@ -73,10 +161,17 @@ class ArtInfoViewModel(
         }
     }
 
+    sealed interface UiAction {
+        data class OnPageChanged(val page: Int) : UiAction
+        data class UpdateFavoriteArtist(val artistId: String): UiAction
+    }
+
     data class UiState(
         val artistTitle: String = "",
+        val currentPage: Int = 0,
         val artistId: String = "",
         val shouldShowLoader: Boolean = true,
-        val artistDetail: ArtistInfo? = null
+        val artistDetail: ArtistInfo? = null,
+        val artWork: ArtWork? = null
     )
 }

@@ -22,5 +22,7 @@ data class ArtistInfo(
 data class SimilarArtist(
     val artist_id: String,
     val title: String,
-    val img_src: String
+    val img_src: String,
+
+    val isFavorite: Boolean = false
 )

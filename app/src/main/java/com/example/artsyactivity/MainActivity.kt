@@ -153,7 +153,8 @@ class MainActivity : ComponentActivity() {
                                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
                                 ArtInfoScreen(
-                                    uiState = uiState
+                                    uiState = uiState,
+                                    uiAction = viewModel::onUiAction
                                 )
                             }
                         }
