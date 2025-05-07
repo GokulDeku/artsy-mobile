@@ -89,7 +89,7 @@ fun RegisterScreen(
                     name = it
                 },
                 isInvalid = {
-                    !Patterns.EMAIL_ADDRESS.matcher(it).matches()
+                    it.trim().isEmpty()
                 }
             )
 
@@ -125,7 +125,7 @@ fun RegisterScreen(
                 },
                 errorMessage = "Password cannot be empty",
                 isInvalid = {
-                    true
+                    it.trim().isEmpty()
                 }
             )
 
