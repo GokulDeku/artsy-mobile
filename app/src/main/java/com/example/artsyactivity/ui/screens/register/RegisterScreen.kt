@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -16,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,17 +36,19 @@ import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.artsyactivity.utils.ArrowBackIcon
 import com.example.artsyactivity.utils.CommonOutlinedTextField
 import com.example.artsyactivity.utils.TextFieldType
 
-
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,
+    viewModel: RegisterScreenViewModel = viewModel(),
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     var name by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -99,11 +104,12 @@ fun RegisterScreen(
                     .fillMaxWidth(),
                 textFieldType = TextFieldType.GENERAL,
                 label = "Email",
-                errorMessage =
-                    if (email.isEmpty())
-                        "Email cannot be empty"
-                    else
-                        "Invalid email format",
+                isError = uiState.emailError.isNotEmpty() || (email.isNotEmpty() && !Patterns.EMAIL_ADDRESS.matcher(email).matches()),
+                errorMessage = when {
+                    uiState.emailError.isNotEmpty() -> uiState.emailError
+                    email.isEmpty() -> "Email cannot be empty"
+                    else -> "Invalid email format"
+                },
                 data = email,
                 onValueChange = {
                     email = it
@@ -133,9 +139,25 @@ fun RegisterScreen(
                 modifier = Modifier
                     .padding(top = 20.dp)
                     .fillMaxWidth(),
-                onClick = {}
+                onClick = {
+                    val isEmailValid = Patterns.EMAIL_ADDRESS.matcher(email).matches()
+                    val isNameValid = name.isNotBlank()
+                    val isPasswordValid = password.isNotBlank()
+
+                    if (!isNameValid || !isEmailValid || !isPasswordValid) {
+                        return@Button
+                    }
+
+                    viewModel.register(name, email, password) {
+                        onLoginClick()
+                    }
+                }
             ) {
-                Text(text = "Register")
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                } else {
+                    Text(text = "Register")
+                }
             }
 
             Text(

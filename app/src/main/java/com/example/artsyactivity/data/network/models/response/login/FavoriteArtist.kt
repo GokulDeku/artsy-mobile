@@ -13,6 +13,6 @@ data class FavoriteArtist(
     val addedAt: String
 ) {
     fun getNationalityWithBirthYear(): String {
-        return "$nationality ${birthday.split("/")[2]}"
+        return "$nationality $birthday"
     }
 }
