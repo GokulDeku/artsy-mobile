@@ -24,7 +24,7 @@ fun SimilarTab(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         itemsIndexed(similarArtists) { index, item ->
-            key(item.artist_id) {
+            key(item.artist_id, item.isFavorite) {
                 ArtistDetail(
                     artistName = item.title,
                     imageUrl = item.img_src,

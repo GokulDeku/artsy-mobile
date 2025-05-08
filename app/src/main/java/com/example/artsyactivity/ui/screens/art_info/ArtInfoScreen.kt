@@ -145,8 +145,8 @@ fun ArtInfoScreen(
                         } else {
                             SimilarTab(
                                 similarArtists = uiState.artistDetail!!.similarArtists,
-                                onFavoriteIconClick = {
-                                    uiAction(ArtInfoViewModel.UiAction.UpdateFavoriteArtist(it))
+                                onFavoriteIconClick = { artistId ->
+                                    uiAction(ArtInfoViewModel.UiAction.UpdateFavoriteArtist(artistId))
                                 }
                             )
                         }

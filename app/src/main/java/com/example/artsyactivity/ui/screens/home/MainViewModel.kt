@@ -13,6 +13,9 @@ import com.example.artsyactivity.network.ApiResult
 import com.example.artsyactivity.network.safeApiCall
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,6 +28,11 @@ class MainViewModel : ViewModel() {
     private val authService = ArtsyApplication.providesAuthService()
 
     init {
+        _uiState.map {
+            it.favoriteArtistId
+        }.onEach {
+            validateSessionCookie()
+        }.launchIn(viewModelScope)
         validateSessionCookie()
     }
 
@@ -34,10 +42,11 @@ class MainViewModel : ViewModel() {
                 authService.logout()
             }
 
-            when(result) {
+            when (result) {
                 is ApiResult.Error -> {
 
                 }
+
                 is ApiResult.Success -> {
                     updateIsLoggedIn(false)
                     updateFavorites(emptyList())
@@ -57,11 +66,12 @@ class MainViewModel : ViewModel() {
                 authService.autoLogin()
             }
 
-            when(result) {
+            when (result) {
                 is ApiResult.Error -> {
                     updateSplashScreenStatus(false)
                     Log.d("VIJ", "result: ${result.error}")
                 }
+
                 is ApiResult.Success -> {
                     updateSplashScreenStatus(false)
                     updateIsLoggedIn(result.data.isAuthorized)
@@ -111,7 +121,24 @@ class MainViewModel : ViewModel() {
     fun updateFavorites(favoriteArtists: List<FavoriteArtist>) {
         _uiState.update {
             it.copy(
-                favorites = favoriteArtists
+                favorites = favoriteArtists,
+                favoriteArtistId = favoriteArtists.map { it.id }
+            )
+        }
+    }
+
+    fun updateFavoriteArtistId(artistId: String) {
+        _uiState.update {
+            it.copy(
+                favoriteArtistId = it.favoriteArtistId.plus(artistId)
+            )
+        }
+    }
+
+    fun removeFavoriteArtistId(artistId: String) {
+        _uiState.update {
+            it.copy(
+                favoriteArtistId = it.favoriteArtistId.plus(artistId)
             )
         }
     }
@@ -121,12 +148,13 @@ class MainViewModel : ViewModel() {
         data object OnLoginClicked : UiAction
         data class OnArtistClicked(val artistId: String) : UiAction
         data object OnSearchClicked : UiAction
-        data object OnLogOutClicked: UiAction
+        data object OnLogOutClicked : UiAction
     }
 
     data class UiState(
         val isLoggedIn: Boolean = false,
         val userImg: String = "",
-        val favorites: List<FavoriteArtist> = emptyList()
+        val favorites: List<FavoriteArtist> = emptyList(),
+        val favoriteArtistId: List<String> = listOf()
     )
 }

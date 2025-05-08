@@ -65,9 +65,4 @@ class RegisterScreenViewModel : ViewModel() {
         val emailError: String = "",
         val isLoading: Boolean = false
     )
-
-    data class ApiError(
-        val message: String,
-        val statusCode: Int
-    )
 }

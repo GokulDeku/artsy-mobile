@@ -14,10 +14,14 @@ import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -34,6 +38,8 @@ import com.example.artsyactivity.ui.screens.register.RegisterScreenViewModel
 import com.example.artsyactivity.ui.screens.search.SearchScreen
 import com.example.artsyactivity.ui.screens.search.SearchScreenViewModel
 import com.example.artsyactivity.ui.theme.ArtsyActivityTheme
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class MainActivity : ComponentActivity() {
 
@@ -93,7 +99,7 @@ class MainActivity : ComponentActivity() {
                                 LoginScreen(
                                     uiState = uiState,
                                     uiAction = { action ->
-                                        when(action) {
+                                        when (action) {
                                             LoginScreenViewModel.UiAction.OnBackClicked -> {
                                                 navController.navigateUp()
                                             }
@@ -155,9 +161,49 @@ class MainActivity : ComponentActivity() {
                                 val viewModel = viewModel<ArtInfoViewModel>()
                                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+                                val mainViewModelUiState by mainViewModel.uiState.collectAsStateWithLifecycle()
+
+                                val lifecycle = LocalLifecycleOwner.current
+
+                                LaunchedEffect(LocalLifecycleOwner.current) {
+
+                                    viewModel.uiEvent.flowWithLifecycle(
+                                        lifecycle = lifecycle.lifecycle,
+                                        minActiveState = Lifecycle.State.STARTED
+                                    ).onEach { event ->
+                                        when (event) {
+                                            ArtInfoViewModel.UiEvent.PopulateFavoriteArtistInformation -> {
+                                                mainViewModelUiState.favoriteArtistId.onEach {
+                                                    viewModel.updateFavoriteStatusForArtist(
+                                                        isFavorite = true,
+                                                        artistId = it
+                                                    )
+                                                }
+                                            }
+
+                                            is ArtInfoViewModel.UiEvent.UpdateFavoriteArtistInfoInMain -> {
+                                                if (event.isFavorite) {
+                                                    mainViewModel.updateFavoriteArtistId(event.artistId)
+                                                } else {
+                                                    mainViewModel.removeFavoriteArtistId(event.artistId)
+                                                }
+                                            }
+                                        }
+                                    }.launchIn(this)
+                                }
+
                                 ArtInfoScreen(
                                     uiState = uiState,
-                                    uiAction = viewModel::onUiAction
+                                    uiAction = { action ->
+                                        when (action) {
+                                            is ArtInfoViewModel.UiAction.UpdateFavoriteArtist -> {
+
+                                            }
+
+                                            else -> Unit
+                                        }
+                                        viewModel.onUiAction(action)
+                                    }
                                 )
                             }
                         }

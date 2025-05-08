@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class FavoriteResponse(
     val message: String,
     val isFavorite: Boolean,
-    val artistData: ArtistData
+    val artistData: ArtistData? = null
 )
 
 @Serializable
