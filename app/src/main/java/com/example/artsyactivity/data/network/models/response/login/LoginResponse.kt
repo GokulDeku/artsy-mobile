@@ -1,5 +1,6 @@
 package com.example.artsyactivity.data.network.models.response.login
 
+import com.example.artsyactivity.data.network.models.response.shared.UserData
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -8,10 +9,3 @@ data class LoginResponse(
     val user: UserData
 )
 
-@Serializable
-data class UserData(
-    val userId: String,
-    val fullName: String,
-    val userImg: String,
-    val favoriteArtists: List<FavoriteArtist>? = emptyList()
-)

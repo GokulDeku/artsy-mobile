@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.artsyactivity.data.network.models.response.shared.UserData
 import com.example.artsyactivity.utils.ArrowBackIcon
 import com.example.artsyactivity.utils.CommonOutlinedTextField
 import com.example.artsyactivity.utils.TextFieldType
@@ -46,7 +47,8 @@ fun RegisterScreen(
     modifier: Modifier = Modifier,
     viewModel: RegisterScreenViewModel = viewModel(),
     onBackClick: () -> Unit,
-    onLoginClick: () -> Unit
+    onLoginClick: () -> Unit,
+    onRegisterSuccess: (UserData) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var name by rememberSaveable { mutableStateOf("") }
@@ -148,8 +150,8 @@ fun RegisterScreen(
                         return@Button
                     }
 
-                    viewModel.register(name, email, password) {
-                        onLoginClick()
+                    viewModel.register(name, email, password) { user ->
+                        onRegisterSuccess(user)
                     }
                 }
             ) {
@@ -195,6 +197,7 @@ fun RegisterScreen(
 private fun PreviewRegisterScreen() {
     RegisterScreen(
         onBackClick = {},
-        onLoginClick = {}
+        onLoginClick = {},
+        onRegisterSuccess = {}
     )
 }

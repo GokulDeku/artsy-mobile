@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.artsyactivity.ArtsyApplication
 import com.example.artsyactivity.data.network.models.request.RegisterData
+import com.example.artsyactivity.data.network.models.response.shared.UserData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -28,7 +29,7 @@ class RegisterScreenViewModel : ViewModel() {
         _uiState.update { it.copy(isLoading = value) }
     }
 
-    fun register(name: String, email: String, password: String, onSuccess: () -> Unit) {
+    fun register(name: String, email: String, password: String, onSuccess: (UserData) -> Unit) {
         viewModelScope.launch {
             setLoading(true)
             clearEmailError()
@@ -42,7 +43,7 @@ class RegisterScreenViewModel : ViewModel() {
                     val responseBody = response.body()
                     if (responseBody != null) {
                         Log.d("REGISTER_SUCCESS", "Body: $responseBody")
-                        onSuccess()
+                        onSuccess(responseBody.user)
                     } else {
                         updateEmailError("Unexpected empty response.")
                     }

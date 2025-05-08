@@ -114,7 +114,7 @@ class MainActivity : ComponentActivity() {
                                                     password = action.password,
                                                     onLoginSuccess = {
                                                         Log.d("LOGIN_RESPONSE", it.toString())
-                                                        mainViewModel.updateUserInformation(it)
+                                                        mainViewModel.updateUserInformation(it.user)
                                                         navController.popBackStack()
                                                     }
                                                 )
@@ -133,6 +133,10 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onBackClick = {
                                         navController.navigateUp()
+                                    },
+                                    onRegisterSuccess = { user ->
+                                        mainViewModel.updateUserInformation(user)
+                                        navController.popBackStack(Destinations.HomeScreen, inclusive = false)
                                     }
                                 )
                             }

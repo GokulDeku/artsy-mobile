@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.artsyactivity.ArtsyApplication
 import com.example.artsyactivity.data.network.models.response.login.FavoriteArtist
-import com.example.artsyactivity.data.network.models.response.login.LoginResponse
+import com.example.artsyactivity.data.network.models.response.shared.UserData
 import com.example.artsyactivity.network.ApiResult
 import com.example.artsyactivity.network.safeApiCall
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -102,10 +102,10 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun updateUserInformation(result: LoginResponse) {
+    fun updateUserInformation(user: UserData) {
         updateIsLoggedIn(true)
-        updateFavorites(result.user.favoriteArtists.orEmpty())
-        updateUserImg(result.user.userImg)
+        updateFavorites(user.favoriteArtists.orEmpty())
+        updateUserImg(user.userImg)
     }
 
     fun onUiAction(action: UiAction) {
