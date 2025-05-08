@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 fun ArtInfoTopBar(
     modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
+    isLoggedIn: Boolean = false,
     title: String,
     onBackClick: () -> Unit,
     onFavoriteClicked: () -> Unit
@@ -41,11 +42,13 @@ fun ArtInfoTopBar(
             }
         },
         actions = {
-            IconButton(onClick = onFavoriteClicked) {
-                Icon(
-                    imageVector = if(isFavorite) Icons.Filled.Star else Icons.Rounded.StarOutline,
-                    contentDescription = "Favorite Icon"
-                )
+            if(isLoggedIn) {
+                IconButton(onClick = onFavoriteClicked) {
+                    Icon(
+                        imageVector = if(isFavorite) Icons.Filled.Star else Icons.Rounded.StarOutline,
+                        contentDescription = "Favorite Icon"
+                    )
+                }
             }
         },
         modifier = modifier,

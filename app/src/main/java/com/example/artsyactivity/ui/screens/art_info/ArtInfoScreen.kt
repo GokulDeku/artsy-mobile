@@ -78,6 +78,7 @@ fun ArtInfoScreen(
             ArtInfoTopBar(
                 title = uiState.artistTitle,
                 isFavorite = uiState.isArtistFavorite,
+                isLoggedIn = isLoggedIn,
                 onBackClick = onBackClick,
                 onFavoriteClicked = {
                     uiAction(ArtInfoViewModel.UiAction.UpdateFavoriteArtist(uiState.artistId))
