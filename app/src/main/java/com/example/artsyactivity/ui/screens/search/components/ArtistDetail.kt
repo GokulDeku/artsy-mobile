@@ -33,7 +33,7 @@ fun ArtistDetail(
     modifier: Modifier = Modifier,
     artistName: String = "Artist Name",
     imageUrl: String = "",
-    shouldShowFavoriteIcon: Boolean = false,
+    shouldShowFavoriteIcon: Boolean = true,
     isFavorite: Boolean = false,
     onFavoriteIconClicked: () -> Unit = { },
     onCardClick: () -> Unit = {}

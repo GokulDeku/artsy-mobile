@@ -43,6 +43,7 @@ fun ArtInfoScreen(
     uiState: ArtInfoViewModel.UiState,
     uiAction: (ArtInfoViewModel.UiAction) -> Unit,
     onBackClick: () -> Unit,
+    isLoggedIn: Boolean
 ) {
     val pagerState = rememberPagerState(
         pageCount = { 3 },
@@ -151,7 +152,8 @@ fun ArtInfoScreen(
                                 similarArtists = uiState.artistDetail!!.similarArtists,
                                 onFavoriteIconClick = { artistId ->
                                     uiAction(ArtInfoViewModel.UiAction.UpdateFavoriteArtist(artistId))
-                                }
+                                },
+                                isLoggedIn = isLoggedIn
                             )
                         }
                     }
@@ -210,6 +212,7 @@ private fun PreviewArtInfoScreen() {
         },
         onBackClick = {
 
-        }
+        },
+        isLoggedIn = true
     )
 }

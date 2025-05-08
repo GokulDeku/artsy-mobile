@@ -141,6 +141,36 @@ class MainActivity : ComponentActivity() {
                                 val viewModel = viewModel<SearchScreenViewModel>()
                                 val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+                                val lifecycle = LocalLifecycleOwner.current
+                                val mainViewModelUiState by mainViewModel.uiState.collectAsStateWithLifecycle()
+
+                                LaunchedEffect(LocalLifecycleOwner.current) {
+
+                                    viewModel.uiEvent.flowWithLifecycle(
+                                        lifecycle = lifecycle.lifecycle,
+                                        minActiveState = Lifecycle.State.STARTED
+                                    ).onEach { event ->
+                                        when (event) {
+                                            ArtInfoViewModel.UiEvent.PopulateFavoriteArtistInformation -> {
+                                                mainViewModelUiState.favoriteArtistId.onEach {
+                                                    viewModel.updateFavoriteStatus(
+                                                        isFavorite = true,
+                                                        artistId = it
+                                                    )
+                                                }
+                                            }
+
+                                            is ArtInfoViewModel.UiEvent.UpdateFavoriteArtistInfoInMain -> {
+                                                if (event.isFavorite) {
+                                                    mainViewModel.updateFavoriteArtistId(event.artistId)
+                                                } else {
+                                                    mainViewModel.removeFavoriteArtistId(event.artistId)
+                                                }
+                                            }
+                                        }
+                                    }.launchIn(this)
+                                }
+
                                 SearchScreen(
                                     uiState = uiState,
                                     animatedContentScope = this,
@@ -152,7 +182,8 @@ class MainActivity : ComponentActivity() {
                                                 artistId = item.artist_id
                                             )
                                         )
-                                    }
+                                    },
+                                    isLoggedIn = mainViewModel.uiState.value.isLoggedIn,
                                 )
                             }
 
@@ -195,18 +226,12 @@ class MainActivity : ComponentActivity() {
                                 ArtInfoScreen(
                                     uiState = uiState,
                                     uiAction = { action ->
-                                        when (action) {
-                                            is ArtInfoViewModel.UiAction.UpdateFavoriteArtist -> {
-
-                                            }
-
-                                            else -> Unit
-                                        }
                                         viewModel.onUiAction(action)
                                     },
                                     onBackClick = {
                                         navController.navigateUp()
-                                    }
+                                    },
+                                    isLoggedIn = mainViewModelUiState.isLoggedIn
                                 )
                             }
                         }

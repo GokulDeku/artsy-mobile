@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class ArtistDetail(
     val artist_id: String,
     val title: String,
-    val img_src: String
+    val img_src: String,
+    val isFavorite: Boolean = false
 )

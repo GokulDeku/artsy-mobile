@@ -28,7 +28,8 @@ fun SharedTransitionScope.SearchScreen(
     uiState: SearchScreenViewModel.SearchScreenUiState,
     uiAction: (SearchScreenViewModel.UiAction) -> Unit,
     animatedContentScope: AnimatedContentScope,
-    onArtistClick: (ArtistDetail) -> Unit = {}
+    onArtistClick: (ArtistDetail) -> Unit = {},
+    isLoggedIn: Boolean
 ) {
     Scaffold(
         topBar = {
@@ -48,10 +49,15 @@ fun SharedTransitionScope.SearchScreen(
         ) {
             uiState.searchResult?.let {
                 itemsIndexed(uiState.searchResult.data) { index, item ->
-                    key(item.artist_id) {
+                    key(item.artist_id, item.isFavorite) {
                         ArtistDetail(
                             artistName = item.title,
                             imageUrl = item.img_src,
+                            shouldShowFavoriteIcon = isLoggedIn,
+                            isFavorite = item.isFavorite,
+                            onFavoriteIconClicked = {
+                                uiAction(SearchScreenViewModel.UiAction.OnFavoriteClicked(item.artist_id))
+                            },
                             onCardClick = {
                                 onArtistClick(item)
                             }
@@ -73,7 +79,8 @@ private fun PreviewSearchScreen() {
             SearchScreen(
                 uiState = SearchScreenViewModel.SearchScreenUiState(),
                 uiAction = {},
-                animatedContentScope = this
+                animatedContentScope = this,
+                isLoggedIn = false
             )
         }
     }

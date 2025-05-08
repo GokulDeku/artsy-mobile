@@ -15,7 +15,8 @@ import com.example.artsyactivity.ui.screens.search.components.ArtistDetail
 fun SimilarTab(
     modifier: Modifier = Modifier,
     similarArtists: List<SimilarArtist>,
-    onFavoriteIconClick: (String) -> Unit
+    onFavoriteIconClick: (String) -> Unit,
+    isLoggedIn: Boolean
 ) {
     LazyColumn(
         modifier = modifier
@@ -29,7 +30,7 @@ fun SimilarTab(
                     artistName = item.title,
                     imageUrl = item.img_src,
                     isFavorite = item.isFavorite,
-                    shouldShowFavoriteIcon = true,
+                    shouldShowFavoriteIcon = isLoggedIn,
                     onFavoriteIconClicked = {
                         onFavoriteIconClick(item.artist_id)
                     }
