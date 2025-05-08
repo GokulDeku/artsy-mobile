@@ -4,6 +4,7 @@ package com.example.artsyactivity.ui.screens.art_info.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.rounded.StarOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -19,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun ArtInfoTopBar(
     modifier: Modifier = Modifier,
+    isFavorite: Boolean = false,
     title: String,
     onBackClick: () -> Unit,
     onFavoriteClicked: () -> Unit
@@ -41,7 +43,7 @@ fun ArtInfoTopBar(
         actions = {
             IconButton(onClick = onFavoriteClicked) {
                 Icon(
-                    imageVector = Icons.Rounded.StarOutline,
+                    imageVector = if(isFavorite) Icons.Filled.Star else Icons.Rounded.StarOutline,
                     contentDescription = "Favorite Icon"
                 )
             }

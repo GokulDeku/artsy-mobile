@@ -100,6 +100,13 @@ class ArtInfoViewModel(
     }
 
     fun updateFavoriteStatusForArtist(isFavorite: Boolean, artistId: String) {
+        if(artistId == uiState.value.artistId) {
+            _uiState.update {
+                it.copy(
+                    isArtistFavorite = isFavorite
+                )
+            }
+        }
         _uiState.update {
             it.copy(
                 artistDetail = it.artistDetail?.copy(
@@ -192,6 +199,7 @@ class ArtInfoViewModel(
         val artistTitle: String = "",
         val currentPage: Int = 0,
         val artistId: String = "",
+        val isArtistFavorite: Boolean = false,
         val shouldShowLoader: Boolean = true,
         val artistDetail: ArtistInfo? = null,
         val artWork: ArtWork? = null,

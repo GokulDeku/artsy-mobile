@@ -41,7 +41,8 @@ import kotlinx.coroutines.launch
 fun ArtInfoScreen(
     modifier: Modifier = Modifier,
     uiState: ArtInfoViewModel.UiState,
-    uiAction: (ArtInfoViewModel.UiAction) -> Unit
+    uiAction: (ArtInfoViewModel.UiAction) -> Unit,
+    onBackClick: () -> Unit,
 ) {
     val pagerState = rememberPagerState(
         pageCount = { 3 },
@@ -75,8 +76,11 @@ fun ArtInfoScreen(
         topBar = {
             ArtInfoTopBar(
                 title = uiState.artistTitle,
-                onBackClick = {},
-                onFavoriteClicked = {}
+                isFavorite = uiState.isArtistFavorite,
+                onBackClick = onBackClick,
+                onFavoriteClicked = {
+                    uiAction(ArtInfoViewModel.UiAction.UpdateFavoriteArtist(uiState.artistId))
+                }
             )
         }
     ) { innerPadding ->
@@ -202,6 +206,9 @@ private fun PreviewArtInfoScreen() {
     ArtInfoScreen(
         uiState = ArtInfoViewModel.UiState(),
         uiAction = {
+
+        },
+        onBackClick = {
 
         }
     )

@@ -203,6 +203,9 @@ class MainActivity : ComponentActivity() {
                                             else -> Unit
                                         }
                                         viewModel.onUiAction(action)
+                                    },
+                                    onBackClick = {
+                                        navController.navigateUp()
                                     }
                                 )
                             }
