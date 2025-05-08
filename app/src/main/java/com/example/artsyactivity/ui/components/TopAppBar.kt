@@ -39,6 +39,7 @@ fun SharedTransitionScope.TopBar(
     userImg: String,
     onSearchClick: () -> Unit,
     onLogOutClick: () -> Unit,
+    onDeleteAccountClick: () -> Unit,
     animatedContentScope: AnimatedContentScope,
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -109,6 +110,7 @@ fun SharedTransitionScope.TopBar(
                             )
                         },
                         onClick = {
+                            onDeleteAccountClick()
                             expanded = false
                         }
                     )

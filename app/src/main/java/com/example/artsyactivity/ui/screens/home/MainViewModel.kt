@@ -56,6 +56,26 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    private fun deleteAccount() {
+        viewModelScope.launch {
+            val result = safeApiCall {
+                authService.deleteAccount()
+            }
+
+            when (result) {
+                is ApiResult.Error -> {
+
+                }
+
+                is ApiResult.Success -> {
+                    updateIsLoggedIn(false)
+                    updateFavorites(emptyList())
+                    updateUserImg("")
+                }
+            }
+        }
+    }
+
     fun updateSplashScreenStatus(status: Boolean) {
         shouldShowSplashScreen = status
     }
@@ -97,6 +117,11 @@ class MainViewModel : ViewModel() {
             is UiAction.OnLogOutClicked -> {
                 logout()
             }
+
+            is UiAction.OnDeleteAccountClicked -> {
+                deleteAccount()
+            }
+
 
             else -> Unit
         }
@@ -149,6 +174,7 @@ class MainViewModel : ViewModel() {
         data class OnArtistClicked(val artistId: String) : UiAction
         data object OnSearchClicked : UiAction
         data object OnLogOutClicked : UiAction
+        data object OnDeleteAccountClicked : UiAction
     }
 
     data class UiState(

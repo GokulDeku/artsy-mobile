@@ -65,6 +65,11 @@ fun SharedTransitionScope.HomeScreen(
                         MainViewModel.UiAction.OnLogOutClicked
                     )
                 },
+                onDeleteAccountClick = {
+                    uiAction(
+                        MainViewModel.UiAction.OnDeleteAccountClicked
+                    )
+                },
                 userImg = uiState.userImg
             )
         }
