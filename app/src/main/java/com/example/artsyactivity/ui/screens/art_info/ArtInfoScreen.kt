@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.artsyactivity.ui.screens.art_info.components.ArtInfoTopBar
+import com.example.artsyactivity.ui.screens.art_info.components.CategoryDialog
 import kotlinx.coroutines.launch
 
 @Composable
@@ -86,6 +87,13 @@ fun ArtInfoScreen(
             )
         }
     ) { innerPadding ->
+        if (uiState.showCategoryDialog) {
+            CategoryDialog(
+                categories = uiState.selectedCategories,
+                onDismiss = { uiAction(ArtInfoViewModel.UiAction.OnDismissCategoryDialog) }
+            )
+        }
+
         Column(modifier = Modifier.padding(innerPadding)) {
             SecondaryTabRow(
                 selectedTabIndex = uiState.currentPage
@@ -146,13 +154,23 @@ fun ArtInfoScreen(
                             )
                         } else if (uiState.currentPage == 1) {
                             ArtWorkTab(
-                                artWorks = uiState.artWork!!.data
+                                artWorks = uiState.artWork!!.data,
+                                onViewCategoryClicked = { artworkId ->
+                                    uiAction(ArtInfoViewModel.UiAction.OnViewCategoryClicked(artworkId))
+                                }
                             )
                         } else {
                             SimilarTab(
                                 similarArtists = uiState.artistDetail!!.similarArtists,
                                 onFavoriteIconClick = { artistId ->
                                     uiAction(ArtInfoViewModel.UiAction.UpdateFavoriteArtist(artistId))
+                                },
+                                onArtistCardClick = { artistId ->
+                                    uiAction(
+                                        ArtInfoViewModel.UiAction.OnSimilarArtistClicked(
+                                            artistId
+                                        )
+                                    )
                                 },
                                 isLoggedIn = isLoggedIn
                             )

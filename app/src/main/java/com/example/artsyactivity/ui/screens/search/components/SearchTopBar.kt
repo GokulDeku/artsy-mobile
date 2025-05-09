@@ -1,29 +1,13 @@
-@file:OptIn(ExperimentalSharedTransitionApi::class)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.example.artsyactivity.ui.screens.search.components
 
-import androidx.compose.animation.AnimatedContentScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -35,15 +19,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.sp
 import com.example.artsyactivity.ui.screens.search.SearchScreenViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SharedTransitionScope.SearchTopBar(
+fun SearchTopBar(
     modifier: Modifier = Modifier,
     keyword: String,
-    uiAction: (SearchScreenViewModel.UiAction) -> Unit,
-    animatedContentScope: AnimatedContentScope
+    uiAction: (SearchScreenViewModel.UiAction) -> Unit
 ) {
-
     var textFieldValueState by remember(keyword) {
         mutableStateOf(
             TextFieldValue(
@@ -62,17 +43,8 @@ fun SharedTransitionScope.SearchTopBar(
     TopAppBar(
         modifier = modifier,
         title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    modifier = Modifier
-                        .sharedElement(
-                            rememberSharedContentState(key = "search-icon-button"),
-                            animatedVisibilityScope = animatedContentScope
-                        ),
-                    onClick = {}
-                ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Filled.Search,
                         contentDescription = "Search"
@@ -80,16 +52,13 @@ fun SharedTransitionScope.SearchTopBar(
                 }
 
                 TextField(
-                    modifier = Modifier
-                        .focusRequester(focusRequester),
+                    modifier = Modifier.focusRequester(focusRequester),
                     value = textFieldValueState,
                     onValueChange = {
                         textFieldValueState = it
                         uiAction(SearchScreenViewModel.UiAction.OnKeyWordChange(it.text))
                     },
-                    textStyle = TextStyle(
-                        fontSize = 18.sp
-                    ),
+                    textStyle = TextStyle(fontSize = 18.sp),
                     placeholder = {
                         Text("Search artists..")
                     },
@@ -102,9 +71,7 @@ fun SharedTransitionScope.SearchTopBar(
                     ),
                 )
             }
-
         },
-
         actions = {
             IconButton(
                 onClick = {

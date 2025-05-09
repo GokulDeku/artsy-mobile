@@ -70,6 +70,11 @@ fun SharedTransitionScope.HomeScreen(
                         MainViewModel.UiAction.OnDeleteAccountClicked
                     )
                 },
+                onLoginClick = {
+                    uiAction(
+                        MainViewModel.UiAction.OnLoginClicked
+                    )
+                },
                 userImg = uiState.userImg
             )
         }

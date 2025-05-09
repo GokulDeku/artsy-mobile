@@ -3,11 +3,7 @@
 package com.example.artsyactivity.ui.screens.search
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,18 +19,16 @@ import com.example.artsyactivity.ui.screens.search.components.ArtistDetail
 import com.example.artsyactivity.ui.screens.search.components.SearchTopBar
 
 @Composable
-fun SharedTransitionScope.SearchScreen(
+fun SearchScreen(
     modifier: Modifier = Modifier,
     uiState: SearchScreenViewModel.SearchScreenUiState,
     uiAction: (SearchScreenViewModel.UiAction) -> Unit,
-    animatedContentScope: AnimatedContentScope,
     onArtistClick: (ArtistDetail) -> Unit = {},
     isLoggedIn: Boolean
 ) {
     Scaffold(
         topBar = {
             SearchTopBar(
-                animatedContentScope = animatedContentScope,
                 keyword = uiState.keyword,
                 uiAction = uiAction,
             )
@@ -74,14 +68,9 @@ fun SharedTransitionScope.SearchScreen(
 @Preview
 @Composable
 private fun PreviewSearchScreen() {
-    SharedTransitionLayout {
-        AnimatedContent(true) {
-            SearchScreen(
-                uiState = SearchScreenViewModel.SearchScreenUiState(),
-                uiAction = {},
-                animatedContentScope = this,
-                isLoggedIn = false
-            )
-        }
-    }
+        SearchScreen(
+            uiState = SearchScreenViewModel.SearchScreenUiState(),
+            uiAction = {},
+            isLoggedIn = false
+        )
 }

@@ -40,6 +40,7 @@ fun SharedTransitionScope.TopBar(
     onSearchClick: () -> Unit,
     onLogOutClick: () -> Unit,
     onDeleteAccountClick: () -> Unit,
+    onLoginClick: () -> Unit,
     animatedContentScope: AnimatedContentScope,
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -48,6 +49,8 @@ fun SharedTransitionScope.TopBar(
         {
             if (isLoggedIn) {
                 expanded = !expanded
+            } else {
+                onLoginClick()
             }
         }
     }
@@ -55,18 +58,21 @@ fun SharedTransitionScope.TopBar(
     TopAppBar(
         title = { Text("Artist Search") },
         actions = {
-            IconButton(
+            Box(
                 modifier = Modifier
                     .sharedElement(
                         rememberSharedContentState(key = "search-icon-button"),
-                        animatedVisibilityScope = animatedContentScope,
-                    ),
-                onClick = onSearchClick
+                        animatedVisibilityScope = animatedContentScope
+                    )
             ) {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = "Search"
-                )
+                IconButton(
+                    onClick = onSearchClick
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = "Search"
+                    )
+                }
             }
 
             Box(modifier = Modifier) {

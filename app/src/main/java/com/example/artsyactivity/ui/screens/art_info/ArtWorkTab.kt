@@ -31,7 +31,8 @@ import com.example.artsyactivity.data.network.models.response.artistInfo.ArtWork
 @Composable
 fun ArtWorkTab(
     modifier: Modifier = Modifier,
-    artWorks: List<ArtWorkDetail>
+    artWorks: List<ArtWorkDetail>,
+    onViewCategoryClicked: (String) -> Unit
 ) {
 
     if(artWorks.isEmpty()) {
@@ -53,7 +54,9 @@ fun ArtWorkTab(
             itemsIndexed(artWorks) { index, item ->
                 ArtWorkItem(
                     item = item,
-                    onViewCategoryClicked = {}
+                    onViewCategoryClicked = {
+                        onViewCategoryClicked(item.id)
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))

@@ -10,7 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -56,15 +56,15 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val navController = rememberNavController()
-            ArtsyActivityTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    SharedTransitionScope {
+            SharedTransitionLayout  {
+                val navController = rememberNavController()
+                ArtsyActivityTheme {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+
                         NavHost(
-                            modifier = it,
                             navController = navController,
                             startDestination = Destinations.HomeScreen
                         ) {
@@ -177,7 +177,6 @@ class MainActivity : ComponentActivity() {
 
                                 SearchScreen(
                                     uiState = uiState,
-                                    animatedContentScope = this,
                                     uiAction = viewModel::onUiAction,
                                     onArtistClick = { item ->
                                         navController.navigate(
@@ -242,6 +241,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+
         }
     }
 }

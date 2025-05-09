@@ -9,6 +9,7 @@ import com.example.artsyactivity.ArtsyApplication
 import com.example.artsyactivity.Destinations
 import com.example.artsyactivity.data.network.models.response.artistInfo.ArtWork
 import com.example.artsyactivity.data.network.models.response.artistInfo.ArtistInfo
+import com.example.artsyactivity.data.network.models.response.category.Category
 import com.example.artsyactivity.data.network.models.response.login.FavoriteArtist
 import com.example.artsyactivity.network.ApiResult
 import com.example.artsyactivity.network.safeApiCall
@@ -32,6 +33,7 @@ class ArtInfoViewModel(
     val artistInfoService = ArtsyApplication.providesArtInfoService()
 
     val artistInfo = savedStateHandle.toRoute<Destinations.ArtInfoScreen>()
+
 
     init {
 
@@ -99,6 +101,45 @@ class ArtInfoViewModel(
         }
     }
 
+    private fun loadArtistDetails(artistId: String) {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    shouldShowLoader = true,
+                    artistDetail = null,
+                    artWork = null
+                )
+            }
+
+            val artistDetailResult = safeApiCall {
+                artistInfoService.getArtistDetails(
+                    id = artistId,
+                    shouldShowSimilarArtist = true
+                )
+            }
+
+            val artWorkResult = safeApiCall {
+                artistInfoService.getArtworkDetails(artistId)
+            }
+
+            if (artistDetailResult is ApiResult.Success && artWorkResult is ApiResult.Success) {
+                _uiState.update {
+                    it.copy(
+                        artistId = artistId,
+                        artistTitle = artistDetailResult.data.name,
+                        artistDetail = artistDetailResult.data,
+                        artWork = artWorkResult.data,
+                        shouldShowLoader = false,
+                        currentPage = 0
+                    )
+                }
+            } else {
+                _uiState.update { it.copy(shouldShowLoader = false) }
+            }
+        }
+    }
+
+
     fun updateFavoriteStatusForArtist(isFavorite: Boolean, artistId: String) {
         if(artistId == uiState.value.artistId) {
             _uiState.update {
@@ -125,7 +166,7 @@ class ArtInfoViewModel(
         viewModelScope.launch {
             updateShouldShowLoader(true)
             val result = safeApiCall {
-                artistInfoService.getArtWorkCategories(
+                artistInfoService.getArtworkDetails(
                     artWorkId = artistId
                 )
             }
@@ -162,8 +203,26 @@ class ArtInfoViewModel(
                 }
             }
 
+            is UiAction.OnSimilarArtistClicked -> {
+                loadArtistDetails(action.artistId)
+                updateCurrentPage(0)
+            }
+
             is UiAction.UpdateFavoriteArtist -> {
                 updateFavoriteArtist(action.artistId)
+            }
+
+            is UiAction.OnViewCategoryClicked -> {
+                fetchCategories(action.artworkId)
+            }
+
+            UiAction.OnDismissCategoryDialog -> {
+                _uiState.update {
+                    it.copy(
+                        showCategoryDialog = false,
+                        selectedCategories = emptyList()
+                    )
+                }
             }
         }
     }
@@ -184,9 +243,35 @@ class ArtInfoViewModel(
         }
     }
 
+    private fun fetchCategories(artworkId: String) {
+        viewModelScope.launch {
+            val result = safeApiCall {
+                artistInfoService.getArtworkCategories(artworkId)
+            }
+
+            when (result) {
+                is ApiResult.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            selectedCategories = result.data.data,
+                            showCategoryDialog = true
+                        )
+                    }
+                }
+
+                is ApiResult.Error -> {
+                    Log.e("ArtInfoViewModel", "Failed to fetch categories: ${result.error}")
+                }
+            }
+        }
+    }
+
     sealed interface UiAction {
         data class OnPageChanged(val page: Int) : UiAction
         data class UpdateFavoriteArtist(val artistId: String) : UiAction
+        data class OnSimilarArtistClicked(val artistId: String) : UiAction
+        data class OnViewCategoryClicked(val artworkId: String) : UiAction
+        data object OnDismissCategoryDialog : UiAction
     }
 
     sealed interface UiEvent {
@@ -203,6 +288,8 @@ class ArtInfoViewModel(
         val shouldShowLoader: Boolean = true,
         val artistDetail: ArtistInfo? = null,
         val artWork: ArtWork? = null,
-        val favoriteArtists: List<FavoriteArtist> = emptyList()
+        val favoriteArtists: List<FavoriteArtist> = emptyList(),
+        val showCategoryDialog: Boolean = false,
+        val selectedCategories: List<Category> = emptyList()
     )
 }

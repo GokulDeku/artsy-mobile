@@ -20,7 +20,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
 import com.example.artsyactivity.R
@@ -28,7 +27,6 @@ import com.example.artsyactivity.utils.ChevronRightIcon
 import com.example.artsyactivity.utils.FavoriteIcon
 
 @Composable
-@Preview
 fun ArtistDetail(
     modifier: Modifier = Modifier,
     artistName: String = "Artist Name",
@@ -61,14 +59,16 @@ fun ArtistDetail(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
             )
         ) {
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                painter = resource,
-                contentDescription = "Artist Image",
-                contentScale = ContentScale.FillWidth
-            )
+
+                Image(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    painter = resource,
+                    contentDescription = "Artist Image",
+                    contentScale = ContentScale.FillWidth
+                )
+
         }
 
         if (shouldShowFavoriteIcon) {

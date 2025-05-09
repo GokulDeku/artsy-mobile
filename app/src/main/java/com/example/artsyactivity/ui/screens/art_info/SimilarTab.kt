@@ -16,6 +16,7 @@ fun SimilarTab(
     modifier: Modifier = Modifier,
     similarArtists: List<SimilarArtist>,
     onFavoriteIconClick: (String) -> Unit,
+    onArtistCardClick: (String) -> Unit,
     isLoggedIn: Boolean
 ) {
     LazyColumn(
@@ -33,7 +34,11 @@ fun SimilarTab(
                     shouldShowFavoriteIcon = isLoggedIn,
                     onFavoriteIconClicked = {
                         onFavoriteIconClick(item.artist_id)
+                    },
+                    onCardClick = {
+                        onArtistCardClick(item.artist_id)
                     }
+
                 )
             }
         }
