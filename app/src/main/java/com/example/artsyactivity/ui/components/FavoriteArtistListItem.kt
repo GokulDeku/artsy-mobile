@@ -46,7 +46,7 @@ fun FavoriteArtistListItem(
                     Text(artist.name, style = MaterialTheme.typography.titleMedium)
                     Text(artist.getNationalityWithBirthYear(), style = MaterialTheme.typography.bodySmall)
                 }
-                Text(artist.addedAt, style = MaterialTheme.typography.bodySmall)
+                InteractiveTimer(addedAtIso = artist.addedAt)
                 IconButton(onClick = onClick) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
