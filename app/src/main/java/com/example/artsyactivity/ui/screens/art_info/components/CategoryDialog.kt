@@ -115,7 +115,7 @@ fun CategoryDialog(
                         }
                     }
                 }
-            } ?: Text("No categories found.")
+            } ?: Text("No categories available.")
         }
     )
 }

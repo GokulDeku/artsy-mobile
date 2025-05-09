@@ -42,21 +42,33 @@ fun SearchScreen(
                 .padding(horizontal = 10.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            uiState.searchResult?.let {
-                itemsIndexed(uiState.searchResult.data) { index, item ->
-                    key(item.artist_id, item.isFavorite) {
-                        ArtistDetail(
-                            artistName = item.title,
-                            imageUrl = item.img_src,
-                            shouldShowFavoriteIcon = isLoggedIn,
-                            isFavorite = item.isFavorite,
-                            onFavoriteIconClicked = {
-                                uiAction(SearchScreenViewModel.UiAction.OnFavoriteClicked(item.artist_id))
-                            },
-                            onCardClick = {
-                                onArtistClick(item)
-                            }
+            uiState.searchResult?.let { result ->
+                if (result.data.isEmpty()) {
+                    item {
+                        androidx.compose.material3.Text(
+                            text = "No Result Found",
+                            style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .padding(32.dp)
+                                .fillParentMaxWidth()
                         )
+                    }
+                } else {
+                    itemsIndexed(result.data) { index, item ->
+                        key(item.artist_id, item.isFavorite) {
+                            ArtistDetail(
+                                artistName = item.title,
+                                imageUrl = item.img_src,
+                                shouldShowFavoriteIcon = isLoggedIn,
+                                isFavorite = item.isFavorite,
+                                onFavoriteIconClicked = {
+                                    uiAction(SearchScreenViewModel.UiAction.OnFavoriteClicked(item.artist_id))
+                                },
+                                onCardClick = {
+                                    onArtistClick(item)
+                                }
+                            )
+                        }
                     }
                 }
             }
