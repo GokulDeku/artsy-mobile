@@ -147,7 +147,8 @@ fun SharedTransitionScope.HomeScreen(
                                     onClick = {
                                         uiAction(
                                             MainViewModel.UiAction.OnArtistClicked(
-                                                uiState.favorites[index].id
+                                                artistId = uiState.favorites[index].id,
+                                                artistName = uiState.favorites[index].name
                                             )
                                         )
                                     }

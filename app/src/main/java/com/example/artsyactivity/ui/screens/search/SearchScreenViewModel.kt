@@ -115,7 +115,6 @@ class SearchScreenViewModel : ViewModel() {
 
             is UiAction.OnFavoriteClicked -> {
                 updateFavoriteArtist(action.artistId)
-//                updateSearchResult(action.artistId)
             }
         }
     }

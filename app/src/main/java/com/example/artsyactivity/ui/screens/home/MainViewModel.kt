@@ -171,7 +171,7 @@ class MainViewModel : ViewModel() {
 
     sealed interface UiAction {
         data object OnLoginClicked : UiAction
-        data class OnArtistClicked(val artistId: String) : UiAction
+        data class OnArtistClicked(val artistId: String, val artistName: String) : UiAction
         data object OnSearchClicked : UiAction
         data object OnLogOutClicked : UiAction
         data object OnDeleteAccountClicked : UiAction

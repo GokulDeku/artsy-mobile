@@ -81,6 +81,15 @@ class MainActivity : ComponentActivity() {
                                                 navController.navigate(Destinations.SearchScreen)
                                             }
 
+                                            is UiAction.OnArtistClicked -> {
+                                                navController.navigate(
+                                                    Destinations.ArtInfoScreen(
+                                                        artistName = action.artistName,
+                                                        artistId = action.artistId
+                                                    )
+                                                )
+                                            }
+
                                             UiAction.OnLoginClicked -> {
                                                 navController.navigate(Destinations.LoginScreen)
                                             }
