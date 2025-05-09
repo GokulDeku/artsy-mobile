@@ -25,6 +25,7 @@ import coil3.compose.rememberAsyncImagePainter
 import com.example.artsyactivity.R
 import com.example.artsyactivity.utils.ChevronRightIcon
 import com.example.artsyactivity.utils.FavoriteIcon
+import toArtistImage
 
 @Composable
 fun ArtistDetail(
@@ -40,11 +41,14 @@ fun ArtistDetail(
     val isInspectionMode = LocalInspectionMode.current
 
     val resource = if (isInspectionMode) {
-        painterResource(R.drawable.demo_image_2)
+        painterResource(R.drawable.artsy_logo)
     } else {
-        rememberAsyncImagePainter(
-            model = imageUrl
-        )
+        val resolvedImage = imageUrl.toArtistImage()
+        when (resolvedImage) {
+            is Int -> painterResource(resolvedImage)
+            is String -> rememberAsyncImagePainter(resolvedImage)
+            else -> painterResource(R.drawable.artsy_logo)
+        }
     }
 
     Box(

@@ -2,7 +2,6 @@
 
 package com.example.artsyactivity.ui.screens.search
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
@@ -12,7 +11,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.artsyactivity.data.network.models.response.search.ArtistDetail
 import com.example.artsyactivity.ui.screens.search.components.ArtistDetail
@@ -24,13 +22,16 @@ fun SearchScreen(
     uiState: SearchScreenViewModel.SearchScreenUiState,
     uiAction: (SearchScreenViewModel.UiAction) -> Unit,
     onArtistClick: (ArtistDetail) -> Unit = {},
-    isLoggedIn: Boolean
+    isLoggedIn: Boolean,
+    onClose: () -> Unit
 ) {
+
     Scaffold(
         topBar = {
             SearchTopBar(
                 keyword = uiState.keyword,
                 uiAction = uiAction,
+                onClose = onClose
             )
         }
     ) { innerPadding ->
@@ -61,16 +62,4 @@ fun SearchScreen(
             }
         }
     }
-}
-
-
-@SuppressLint("UnusedContentLambdaTargetStateParameter")
-@Preview
-@Composable
-private fun PreviewSearchScreen() {
-        SearchScreen(
-            uiState = SearchScreenViewModel.SearchScreenUiState(),
-            uiAction = {},
-            isLoggedIn = false
-        )
 }

@@ -23,7 +23,8 @@ import com.example.artsyactivity.ui.screens.search.SearchScreenViewModel
 fun SearchTopBar(
     modifier: Modifier = Modifier,
     keyword: String,
-    uiAction: (SearchScreenViewModel.UiAction) -> Unit
+    uiAction: (SearchScreenViewModel.UiAction) -> Unit,
+    onClose: () -> Unit
 ) {
     var textFieldValueState by remember(keyword) {
         mutableStateOf(
@@ -76,6 +77,7 @@ fun SearchTopBar(
             IconButton(
                 onClick = {
                     uiAction(SearchScreenViewModel.UiAction.ClearKeyWord)
+                    onClose()
                 }
             ) {
                 Icon(

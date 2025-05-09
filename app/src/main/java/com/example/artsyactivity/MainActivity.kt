@@ -196,6 +196,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                     },
                                     isLoggedIn = mainViewModel.uiState.value.isLoggedIn,
+                                    onClose = { navController.popBackStack(Destinations.HomeScreen, inclusive = false) }
                                 )
                             }
 
