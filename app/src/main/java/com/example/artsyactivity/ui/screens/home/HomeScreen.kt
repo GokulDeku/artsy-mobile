@@ -2,12 +2,9 @@
 
 package com.example.artsyactivity.ui.screens.home
 
-import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +19,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
@@ -32,10 +31,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import com.example.artsyactivity.data.network.models.response.login.FavoriteArtist
 import com.example.artsyactivity.ui.components.FavoriteArtistListItem
 import com.example.artsyactivity.ui.components.TopBar
 import java.text.SimpleDateFormat
@@ -46,7 +43,8 @@ import java.util.Locale
 fun SharedTransitionScope.HomeScreen(
     animatedContentScope: AnimatedContentScope,
     uiState: MainViewModel.UiState,
-    uiAction: (MainViewModel.UiAction) -> Unit
+    uiAction: (MainViewModel.UiAction) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     val context = LocalContext.current
 
@@ -77,7 +75,8 @@ fun SharedTransitionScope.HomeScreen(
                 },
                 userImg = uiState.userImg
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             val currentDate = remember {
@@ -176,85 +175,6 @@ fun SharedTransitionScope.HomeScreen(
                     }
                 )
             }
-        }
-    }
-}
-
-@SuppressLint("UnusedContentLambdaTargetStateParameter")
-@Preview
-@Composable
-fun HomeScreenPreview_LoggedOut() {
-    SharedTransitionLayout {
-        AnimatedContent(true) {
-            HomeScreen(
-                uiState = MainViewModel.UiState(
-                    isLoggedIn = false
-                ),
-                uiAction = {
-
-                },
-                animatedContentScope = this
-            )
-        }
-    }
-}
-
-
-@SuppressLint("UnusedContentLambdaTargetStateParameter")
-@Preview
-@Composable
-fun HomeScreenPreview_LoggedInNoFavorites() {
-    SharedTransitionLayout {
-        AnimatedContent(true) {
-            HomeScreen(
-                uiState = MainViewModel.UiState(
-                    isLoggedIn = true
-                ),
-                uiAction = {
-
-                },
-                animatedContentScope = this
-            )
-        }
-    }
-}
-
-
-@SuppressLint("UnusedContentLambdaTargetStateParameter")
-@Preview
-@Composable
-fun HomeScreenPreview_LoggedInFavorites() {
-    SharedTransitionLayout {
-        AnimatedContent(true) {
-            HomeScreen(
-                uiState = MainViewModel.UiState(
-                    isLoggedIn = true,
-                    favorites = listOf(
-                        FavoriteArtist(
-                            id = "1",
-                            name = "Calude Monet",
-                            nationality = "French",
-                            birthday = "01/01/1840",
-                            addedAt = "4 seconds ago",
-                            deathday = "",
-                            img_src = ""
-                        ),
-                        FavoriteArtist(
-                            id = "2",
-                            name = "Pablo Picasso",
-                            nationality = "Spanish",
-                            birthday = "01/01/1881",
-                            addedAt = "15 seconds ago",
-                            deathday = "",
-                            img_src = ""
-                        )
-                    )
-                ),
-                uiAction = {
-
-                },
-                animatedContentScope = this
-            )
         }
     }
 }

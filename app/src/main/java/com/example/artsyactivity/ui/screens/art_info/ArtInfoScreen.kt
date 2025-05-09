@@ -21,12 +21,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -34,24 +39,40 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.artsyactivity.ui.screens.art_info.components.ArtInfoTopBar
 import com.example.artsyactivity.ui.screens.art_info.components.CategoryDialog
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @Composable
 fun ArtInfoScreen(
     modifier: Modifier = Modifier,
     uiState: ArtInfoViewModel.UiState,
+    uiEvent: Flow<ArtInfoViewModel.UiEvent>,
     uiAction: (ArtInfoViewModel.UiAction) -> Unit,
     onBackClick: () -> Unit,
     isLoggedIn: Boolean
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        uiEvent.collect { event ->
+            when (event) {
+                is ArtInfoViewModel.UiEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message)
+                }
+                else -> Unit
+            }
+        }
+    }
+
+
     val pagerState = rememberPagerState(
         pageCount = { 3 },
         initialPage = uiState.currentPage,
     )
-
-    val coroutineScope = rememberCoroutineScope()
 
     val tabInfo = rememberSaveable {
         listOf<TabInfo>(
@@ -75,6 +96,7 @@ fun ArtInfoScreen(
 
     Scaffold(
         modifier = modifier,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             ArtInfoTopBar(
                 title = uiState.artistTitle,
@@ -219,19 +241,4 @@ fun DetailTab(
             text = biography
         )
     }
-}
-
-@Preview
-@Composable
-private fun PreviewArtInfoScreen() {
-    ArtInfoScreen(
-        uiState = ArtInfoViewModel.UiState(),
-        uiAction = {
-
-        },
-        onBackClick = {
-
-        },
-        isLoggedIn = true
-    )
 }

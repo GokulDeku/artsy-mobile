@@ -11,11 +11,13 @@ import com.example.artsyactivity.data.network.models.response.login.FavoriteArti
 import com.example.artsyactivity.data.network.models.response.shared.UserData
 import com.example.artsyactivity.network.ApiResult
 import com.example.artsyactivity.network.safeApiCall
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -23,9 +25,14 @@ class MainViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
+    private val _uiEvent = Channel<UiEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
+
     var shouldShowSplashScreen by mutableStateOf(true)
 
     private val authService = ArtsyApplication.providesAuthService()
+
+    val snackbarMessage: String? = null
 
     init {
         _uiState.map {
@@ -51,6 +58,7 @@ class MainViewModel : ViewModel() {
                     updateIsLoggedIn(false)
                     updateFavorites(emptyList())
                     updateUserImg("")
+                    _uiEvent.send(UiEvent.ShowSnackbar("Logged out successfully"))
                 }
             }
         }
@@ -71,6 +79,7 @@ class MainViewModel : ViewModel() {
                     updateIsLoggedIn(false)
                     updateFavorites(emptyList())
                     updateUserImg("")
+                    _uiEvent.send(UiEvent.ShowSnackbar("Account deleted successfully"))
                 }
             }
         }
@@ -106,6 +115,9 @@ class MainViewModel : ViewModel() {
         updateIsLoggedIn(true)
         updateFavorites(user.favoriteArtists.orEmpty())
         updateUserImg(user.userImg)
+        viewModelScope.launch {
+            _uiEvent.send(UiEvent.ShowSnackbar("Logged in successfully"))
+        }
     }
 
     fun onUiAction(action: UiAction) {
@@ -175,6 +187,10 @@ class MainViewModel : ViewModel() {
         data object OnSearchClicked : UiAction
         data object OnLogOutClicked : UiAction
         data object OnDeleteAccountClicked : UiAction
+    }
+
+    sealed interface UiEvent {
+        data class ShowSnackbar(val message: String) : UiEvent
     }
 
     data class UiState(

@@ -34,6 +34,7 @@ class ArtInfoViewModel(
 
     val artistInfo = savedStateHandle.toRoute<Destinations.ArtInfoScreen>()
 
+    val snackbarMessage: String? = null
 
     init {
 
@@ -94,6 +95,11 @@ class ArtInfoViewModel(
                     _uiEvent.send(
                         UiEvent.UpdateFavoriteArtistInfoInMain(
                             artistId, result.data.isFavorite
+                        )
+                    )
+                    _uiEvent.send(
+                        UiEvent.ShowSnackbar(
+                            if (result.data.isFavorite) "Added to favorites" else "Removed from favorites"
                         )
                     )
                 }
@@ -278,6 +284,7 @@ class ArtInfoViewModel(
         data object PopulateFavoriteArtistInformation : UiEvent
         data class UpdateFavoriteArtistInfoInMain(val artistId: String, val isFavorite: Boolean) :
             UiEvent
+        data class ShowSnackbar(val message: String) : UiEvent
     }
 
     data class UiState(

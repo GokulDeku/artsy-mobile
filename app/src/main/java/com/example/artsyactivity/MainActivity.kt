@@ -13,9 +13,11 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
@@ -73,6 +75,25 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
 
+                                val snackbarHostState = remember { SnackbarHostState() }
+                                val lifecycleOwner = LocalLifecycleOwner.current
+
+                                LaunchedEffect(Unit) {
+                                    mainViewModel.uiEvent
+                                        .flowWithLifecycle(
+                                            lifecycle = lifecycleOwner.lifecycle,
+                                            minActiveState = Lifecycle.State.STARTED
+                                        )
+                                        .onEach { event ->
+                                            when (event) {
+                                                is MainViewModel.UiEvent.ShowSnackbar -> {
+                                                    snackbarHostState.showSnackbar(event.message)
+                                                }
+                                            }
+                                        }
+                                        .launchIn(this)
+                                }
+
                                 HomeScreen(
                                     uiState = uiState,
                                     uiAction = { action ->
@@ -97,6 +118,7 @@ class MainActivity : ComponentActivity() {
                                             else -> mainViewModel.onUiAction(action)
                                         }
                                     },
+                                    snackbarHostState = snackbarHostState,
                                     animatedContentScope = this
                                 )
                             }
@@ -180,6 +202,10 @@ class MainActivity : ComponentActivity() {
                                                     mainViewModel.removeFavoriteArtistId(event.artistId)
                                                 }
                                             }
+
+                                            is ArtInfoViewModel.UiEvent.ShowSnackbar -> {
+                                                Log.d("SnackbarEvent", event.message)
+                                            }
                                         }
                                     }.launchIn(this)
                                 }
@@ -232,12 +258,17 @@ class MainActivity : ComponentActivity() {
                                                     mainViewModel.removeFavoriteArtistId(event.artistId)
                                                 }
                                             }
+
+                                            is ArtInfoViewModel.UiEvent.ShowSnackbar -> {
+                                                Log.d("SnackbarEvent", event.message)
+                                            }
                                         }
                                     }.launchIn(this)
                                 }
 
                                 ArtInfoScreen(
                                     uiState = uiState,
+                                    uiEvent = viewModel.uiEvent,
                                     uiAction = { action ->
                                         viewModel.onUiAction(action)
                                     },
